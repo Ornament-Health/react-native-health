@@ -111,6 +111,7 @@ There is a gitbook version for the documentation on this [link](https://vinicius
 - [getRestingHeartRateSamples](getRestingHeartRateSamples.md)
 - [getVo2MaxSamples](getVo2MaxSamples.md)
 - [getLatestBmi](getLatestBmi.md)
+- [getBmiSamples](getBmiSamples.md)
 - [getRespiratoryRateSamples](getRespiratoryRateSamples.md)
 - [getOxygenSaturationSamples](getOxygenSaturationSamples.md)
 - [getWalkingHeartRateAverage](getWalkingHeartRateAverage.md)
