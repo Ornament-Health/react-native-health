@@ -31,12 +31,14 @@ typedef enum : NSUInteger {
 - (NSDateComponents*) makeDateComponentsFromInterval:(RCTAppleHealthKitStatisticsInterval)interval {
 	NSDateComponents *result = [[NSDateComponents alloc] init];
 	switch (interval) {
-	case RCTAppleHealthKitStatisticsIntervalMonth:
-		result.month = 1;
-		break;
-	case RCTAppleHealthKitStatisticsIntervalDay:
-		result.day = 1;
-		break;
+		case RCTAppleHealthKitStatisticsIntervalMonth: {
+			result.month = 1;
+			break;
+		}
+		case RCTAppleHealthKitStatisticsIntervalDay: {
+			result.day = 1;
+			break;
+		}
 	}
 	return result;
 }
@@ -56,8 +58,8 @@ typedef enum : NSUInteger {
 
 	// TODO: Switch query by aggregator type
 	switch (aggregatorType) {
-	case RCTAppleHealthKitStatisticsAggregatorMin:
-		[self fetchMinStatisticsCollection:bodyMassType
+		case RCTAppleHealthKitStatisticsAggregatorMin: {
+			[self fetchMinStatisticsCollection:bodyMassType
 									  unit:unit
 								 startDate:startDate
 								   endDate:endDate
@@ -68,10 +70,11 @@ typedef enum : NSUInteger {
 				return;
 			}
 			callback(@[[NSNull null], result]);
-		}];
-		break;
-	case RCTAppleHealthKitStatisticsAggregatorMax:
-		[self fetchMaxStatisticsCollection:bodyMassType
+			}];
+			break;
+		}
+		case RCTAppleHealthKitStatisticsAggregatorMax: {
+			[self fetchMaxStatisticsCollection:bodyMassType
 									  unit:unit
 								 startDate:startDate
 								   endDate:endDate
@@ -82,10 +85,11 @@ typedef enum : NSUInteger {
 				return;
 			}
 			callback(@[[NSNull null], result]);
-		}];
-		break;
-	case RCTAppleHealthKitStatisticsAggregatorAverage:
-		[self fetchDiscreteAverageStatisticsCollection:bodyMassType
+			}];
+			break;
+		}
+		case RCTAppleHealthKitStatisticsAggregatorAverage: {
+			[self fetchDiscreteAverageStatisticsCollection:bodyMassType
 												  unit:unit
 											 startDate:startDate
 											   endDate:endDate
@@ -96,12 +100,15 @@ typedef enum : NSUInteger {
 				return;
 			}
 			callback(@[[NSNull null], result]);
-		}];
-		break;
-	case RCTAppleHealthKitStatisticsAggregatorFirst:
-		break;
-	case RCTAppleHealthKitStatisticsAggregatorLast:
-		break;
+			}];
+			break;
+		}
+		case RCTAppleHealthKitStatisticsAggregatorFirst: {
+			break;
+		}
+		case RCTAppleHealthKitStatisticsAggregatorLast: {
+			break;
+		}
 	}
 }
 
