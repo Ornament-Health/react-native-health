@@ -19,9 +19,9 @@
                            completion:(void (^)(double, NSError *))completionHandler;
 
 - (void)fetchSumOfSamplesOnDayForType:(HKQuantityType *)quantityType
-                                   unit:(HKUnit *)unit
-                          includeManuallyAdded:(BOOL)includeManuallyAdded
-                                   day:(NSDate *)day
+                                 unit:(HKUnit *)unit
+                 includeManuallyAdded:(BOOL)includeManuallyAdded
+                                  day:(NSDate *)day
                            completion:(void (^)(double, NSDate *, NSDate *, NSError *))completionHandler;
 
 - (void)fetchCumulativeSumStatisticsCollection:(HKQuantityType *)quantityType
@@ -31,11 +31,11 @@
                                     completion:(void (^)(NSArray *, NSError *))completionHandler;
 
 - (void)fetchSamplesOfType:(HKSampleType *)quantityType
-                              unit:(HKUnit *)unit
-                         predicate:(NSPredicate *)predicate
-                         ascending:(BOOL)asc
-                             limit:(NSUInteger)lim
-                        completion:(void (^)(NSArray *, NSError *))completion;
+                      unit:(HKUnit *)unit
+                 predicate:(NSPredicate *)predicate
+                 ascending:(BOOL)asc
+                     limit:(NSUInteger)lim
+                completion:(void (^)(NSArray *, NSError *))completion;
 
 - (void)fetchClinicalRecordsOfType:(HKClinicalType *)type
                          predicate:(NSPredicate *)predicate
@@ -82,7 +82,7 @@
                                     completion:(void (^)(NSArray *, NSError *))completionHandler;
 
 - (void)fetchSleepCategorySamplesForPredicate:(NSPredicate *)predicate
-                                   limit:(NSUInteger)lim
+                                        limit:(NSUInteger)lim
                                    completion:(void (^)(NSArray *, NSError *))completion;
 
 - (void)fetchWorkoutForPredicate:(NSPredicate *)predicate
@@ -96,10 +96,31 @@
 - (void)setObserverForType:(HKSampleType *)quantityType
                       type:(NSString *)type
                     bridge:(RCTBridge *)bridge
-                    hasListeners:(bool)hasListeners;
+              hasListeners:(bool)hasListeners;
 
 - (void)fetchActivitySummary:(NSDate *)startDate
                      endDate:(NSDate *)endDate
                   completion:(void (^)(NSArray *, NSError *))completionHandler;
+
+- (void)fetchDiscreteAverageStatisticsCollection:(HKQuantityType *)quantityType
+											unit:(HKUnit *)unit
+									   startDate:(NSDate *)startDate
+										 endDate:(NSDate *)endDate
+										interval:(NSDateComponents *)interval
+									  completion:(void (^)(NSArray *, NSError *))completionHandler;
+
+- (void)fetchMinStatisticsCollection:(HKQuantityType *)quantityType
+								unit:(HKUnit *)unit
+						   startDate:(NSDate *)startDate
+							 endDate:(NSDate *)endDate
+							interval:(NSDateComponents *)interval
+						  completion:(void (^)(NSArray *, NSError *))completionHandler;
+
+- (void)fetchMaxStatisticsCollection:(HKQuantityType *)quantityType
+								unit:(HKUnit *)unit
+						   startDate:(NSDate *)startDate
+							 endDate:(NSDate *)endDate
+							interval:(NSDateComponents *)interval
+						  completion:(void (^)(NSArray *, NSError *))completionHandler;
 
 @end

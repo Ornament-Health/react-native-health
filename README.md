@@ -263,6 +263,10 @@ they are splitted in the following categories
 - [getAnchoredWorkouts](/docs/getAnchoredWorkouts.md)
 - [saveWorkout](/docs/saveWorkout.md)
 
+#### Statistics
+
+- [[WIP] all statistics methods](docs/statistics.md)
+
 ## Additional Information
 
 ### Permissions
