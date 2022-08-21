@@ -456,6 +456,15 @@ RCT_EXPORT_METHOD(getSleepSamples:(NSDictionary *)input callback:(RCTResponseSen
     [self sleep_getSleepSamples:input callback:callback];
 }
 
+/// Save sleep state
+/// @param input - dictionary with required keys: startDate, endDate, value
+/// @param input.value - String value. Can be one of this: inBed, asleep, awake.
+RCT_EXPORT_METHOD(saveSleepAnalysis:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+	[self _initializeHealthStore];
+	[self sleep_saveSleepAnalysis:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getInfo:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
