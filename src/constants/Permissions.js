@@ -109,6 +109,7 @@ export const Permissions = {
   LowHeartRateEvent: 'LowHeartRateEvent',
   MindfulSession: 'MindfulSession',
   NikeFuel: 'NikeFuel',
+  PeakFlow: 'PeakFlow',
   RespiratoryRate: 'RespiratoryRate',
   SleepAnalysis: 'SleepAnalysis',
   StepCount: 'StepCount',
@@ -160,4 +161,5 @@ export const Permissions = {
   NightSweats: 'NightSweats',
   SleepChanges: 'SleepChanges',
   BladderIncontinence: 'BladderIncontinence',
+  WorkoutRoute: 'WorkoutRoute'
 }
