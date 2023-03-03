@@ -28,25 +28,35 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcher.h>
 
-RCTAppleHealthKit *shared;
 
 @implementation RCTAppleHealthKit
-
-@synthesize bridge = _bridge;
 
 bool hasListeners;
 
 RCT_EXPORT_MODULE();
 
+
++ (id)allocWithZone:(NSZone *)zone {
+    static RCTAppleHealthKit *sharedInstance = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedInstance = [super allocWithZone:zone];
+    });
+    return sharedInstance;
+}
+
++ (RCTCallableJSModules *)sharedJsModule {
+    static RCTCallableJSModules *sharedJsModule = nil;
+    static dispatch_once_t onceToken;
+    dispatch_once(&onceToken, ^{
+        sharedJsModule = [RCTCallableJSModules new];
+    });
+    return sharedJsModule;
+}
+
 - (id) init
 {
-    if (shared != nil) {
-        return shared;
-    }
-
-    self = [super init];
-    shared = self;
-    return self;
+    return [super init];
 }
 
 + (BOOL)requiresMainQueueSetup
@@ -142,6 +152,24 @@ RCT_EXPORT_METHOD(saveWaistCircumference:(NSDictionary *)input callback:(RCTResp
     [self body_saveWaistCircumference:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getLatestPeakFlow:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self body_getLatestPeakFlow:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getPeakFlowSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self body_getPeakFlowSamples:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(savePeakFlow:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self body_savePeakFlow:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getLatestBmi:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
@@ -220,6 +248,12 @@ RCT_EXPORT_METHOD(getAnchoredWorkouts:(NSDictionary *)input callback:(RCTRespons
     [self workout_getAnchoredQuery:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getWorkoutRouteSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self workout_getRoute:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(setObserver:(NSDictionary *)input)
 {
     [self _initializeHealthStore];
@@ -236,6 +270,12 @@ RCT_EXPORT_METHOD(saveSteps:(NSDictionary *)input callback:(RCTResponseSenderBlo
 {
     [self _initializeHealthStore];
     [self fitness_saveSteps:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(saveWalkingRunningDistance:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self fitness_saveWalkingRunningDistance:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getDistanceWalkingRunning:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -315,7 +355,14 @@ RCT_EXPORT_METHOD(saveWater:(NSDictionary *)input callback:(RCTResponseSenderBlo
 
 RCT_EXPORT_METHOD(getWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
+    [self _initializeHealthStore];
     [self getWater:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getWaterSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self getWaterSamples:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getHeartRateSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -650,7 +697,7 @@ RCT_EXPORT_METHOD(getStatisticRestingHeartRate:(NSDictionary *)input callback:(R
         [self.healthStore requestAuthorizationToShareTypes:writeDataTypes readTypes:readDataTypes completion:^(BOOL success, NSError *error) {
             if (!success) {
                 NSString *errMsg = [NSString stringWithFormat:@"Error with HealthKit authorization: %@", error];
-                NSLog(errMsg);
+                 NSLog(@"%@", errMsg);
                 callback(@[RCTMakeError(errMsg, nil, nil)]);
                 return;
             } else {
@@ -729,8 +776,8 @@ RCT_EXPORT_METHOD(getStatisticRestingHeartRate:(NSDictionary *)input callback:(R
         if(permissions != nil && [permissions objectForKey:@"read"] != nil && [permissions objectForKey:@"write"] != nil){
             NSArray* readPermsNamesArray = [permissions objectForKey:@"read"];
             NSArray* writePermsNamesArray = [permissions objectForKey:@"write"];
-            readPermsArray = [self getReadPermsFromOptions:readPermsNamesArray];
-            writePermsArray = [self getWritePermsFromOptions:writePermsNamesArray];
+            readPermsArray = [[self getReadPermsFromOptions:readPermsNamesArray] allObjects];
+            writePermsArray = [[self getWritePermsFromOptions:writePermsNamesArray] allObjects];
         } else {
             callback(@[RCTMakeError(@"permissions must be included in permissions object with read and write options", nil, nil)]);
             return;
@@ -763,10 +810,8 @@ RCT_EXPORT_METHOD(getStatisticRestingHeartRate:(NSDictionary *)input callback:(R
 
     This method must be called at the application:didFinishLaunchingWithOptions: method, in AppDelegate.m
  */
-- (void)initializeBackgroundObservers:(RCTBridge *)bridge
+  - (void)initializeBackgroundObservers:(RCTBridge *)bridge
 {
-    NSLog(@"[HealthKit] Background observers will be added to the app");
-
     [self _initializeHealthStore];
 
     self.bridge = bridge;
@@ -818,14 +863,35 @@ RCT_EXPORT_METHOD(getStatisticRestingHeartRate:(NSDictionary *)input callback:(R
 
 // Will be called when this module's first listener is added.
 -(void)startObserving {
+    NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+        for (NSString *notificationName in [self supportedEvents]) {
+            [center addObserver:self
+                   selector:@selector(emitEventInternal:)
+                       name:notificationName
+                     object:nil];
+        }
     self.hasListeners = YES;
-    // Set up any upstream listeners or background tasks as necessary
+}
+
+- (void)emitEventInternal:(NSNotification *)notification {
+  if (self.hasListeners) {
+    self.callableJSModules = [RCTAppleHealthKit sharedJsModule];
+    [self.callableJSModules setBridge:self.bridge];
+    [self sendEventWithName:notification.name
+                   body:notification.userInfo];
+  }
+}
+
+- (void)emitEventWithName:(NSString *)name andPayload:(NSDictionary *)payload {
+    [[NSNotificationCenter defaultCenter] postNotificationName:name
+                                                    object:self
+                                                  userInfo:payload];
 }
 
 // Will be called when this module's last listener is removed, or on dealloc.
 -(void)stopObserving {
     self.hasListeners = NO;
-    // Remove upstream listeners, stop unnecessary background tasks
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
 }
 
 @end
