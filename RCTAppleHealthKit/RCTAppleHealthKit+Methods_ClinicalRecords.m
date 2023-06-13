@@ -51,15 +51,18 @@
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
     NSPredicate * predicate = [RCTAppleHealthKit predicateForSamplesBetweenDates:startDate endDate:endDate];
     
-    [self fetchClinicalRecordsOfType:recordType predicate:predicate ascending:ascending limit:limit completion:^(NSArray *results, NSError *error) {
-        if(results){
-            callback(@[[NSNull null], results]);
-            return;
-        } else {
-            callback(@[RCTJSErrorFromNSError(error)]);
-            return;
-        }
-    }];
+//    [self fetchClinicalRecordsOfType:recordType predicate:predicate ascending:ascending limit:limit completion:^(NSArray *results, NSError *error) {
+//        if(results){
+//            callback(@[[NSNull null], results]);
+//            return;
+//        } else {
+//            callback(@[RCTJSErrorFromNSError(error)]);
+//            return;
+//        }
+//    }];
+    
+    callback(@[RCTMakeError(@"Clinical records not supported", nil, nil)]);
+    return;
 }
 
 - (void)clinical_registerObserver:(NSString *)type bridge:(RCTBridge *)bridge hasListeners:(bool)hasListeners

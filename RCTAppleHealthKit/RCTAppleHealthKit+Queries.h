@@ -38,11 +38,11 @@
 					 limit:(NSUInteger)lim
 				completion:(void (^)(NSArray *, NSError *))completion;
 
-- (void)fetchClinicalRecordsOfType:(HKClinicalType *)type
-						 predicate:(NSPredicate *)predicate
-						 ascending:(BOOL)asc
-							 limit:(NSUInteger)lim
-						completion:(void (^)(NSArray *, NSError *))completion;
+//- (void)fetchClinicalRecordsOfType:(HKClinicalType *)type
+//						 predicate:(NSPredicate *)predicate
+//						 ascending:(BOOL)asc
+//							 limit:(NSUInteger)lim
+//						completion:(void (^)(NSArray *, NSError *))completion;
 
 - (void)fetchAnchoredWorkouts:(HKSampleType *)type
 					predicate:(NSPredicate *)predicate
