@@ -801,20 +801,20 @@ RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponse
             [self fitness_registerObserver:type bridge:bridge hasListeners:hasListeners];
         }
         
-        NSArray *clinicalObservers = @[
-            @"AllergyRecord",
-            @"ConditionRecord",
-            @"CoverageRecord",
-            @"ImmunizationRecord",
-            @"LabResultRecord",
-            @"MedicationRecord",
-            @"ProcedureRecord",
-            @"VitalSignRecord"
-        ];
-        
-        for(NSString * type in clinicalObservers) {
-            [self clinical_registerObserver:type bridge:bridge hasListeners:hasListeners];
-        }
+//        NSArray *clinicalObservers = @[
+//            @"AllergyRecord",
+//            @"ConditionRecord",
+//            @"CoverageRecord",
+//            @"ImmunizationRecord",
+//            @"LabResultRecord",
+//            @"MedicationRecord",
+//            @"ProcedureRecord",
+//            @"VitalSignRecord"
+//        ];
+//
+//        for(NSString * type in clinicalObservers) {
+//            [self clinical_registerObserver:type bridge:bridge hasListeners:hasListeners];
+//        }
 
         NSLog(@"[HealthKit] Background observers added to the app");
         [self startObserving];
