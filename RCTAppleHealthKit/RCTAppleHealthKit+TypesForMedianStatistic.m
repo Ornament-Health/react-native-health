@@ -243,15 +243,15 @@
     } else if ([@"intermenstrualBleeding" isEqualToString: key]) {
         return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierIntermenstrualBleeding];
     } else if ([@"infrequentMenstrualCycles" isEqualToString: key] && systemVersion >= 16.0) {
-        return [HKObjectType quantityTypeForIdentifier:HKCategoryTypeIdentifierInfrequentMenstrualCycles];
+        return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierInfrequentMenstrualCycles];
     } else if ([@"irregularMenstrualCycles" isEqualToString: key] && systemVersion >= 16.0) {
-        return [HKObjectType quantityTypeForIdentifier:HKCategoryTypeIdentifierIrregularMenstrualCycles];
+        return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierIrregularMenstrualCycles];
     } else if ([@"persistentIntermenstrualBleeding" isEqualToString: key] && systemVersion >= 16.0) {
-        return [HKObjectType quantityTypeForIdentifier:HKCategoryTypeIdentifierPersistentIntermenstrualBleeding];
+        return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierPersistentIntermenstrualBleeding];
     } else if ([@"prolongedMenstrualPeriods" isEqualToString: key] && systemVersion >= 16.0) {
-        return [HKObjectType quantityTypeForIdentifier:HKCategoryTypeIdentifierProlongedMenstrualPeriods];
+        return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierProlongedMenstrualPeriods];
     } else if ([@"cervicalMucusQuality" isEqualToString: key] && systemVersion >= 9.0) {
-        return [HKObjectType quantityTypeForIdentifier:HKCategoryTypeIdentifierCervicalMucusQuality];
+        return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierCervicalMucusQuality];
     } else if ([@"ovulationTestResult" isEqualToString: key]) {
         return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierOvulationTestResult];
     } else if ([@"progesteroneTestResult" isEqualToString: key] && systemVersion >= 15.0) {

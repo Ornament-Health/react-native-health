@@ -25,6 +25,7 @@
 #import "RCTAppleHealthKit+Methods_ClinicalRecords.h"
 #import "RTCAppleHealthKit+Methods_Statistics.h"
 #import "RCTAppleHealthKit+Methods_MedianStatistics.h"
+#import "RCTAppleHealthKit+Methods_ReproductiveStatistics.h"
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcher.h>
@@ -599,6 +600,24 @@ RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponse
 {
     [self _initializeHealthStore];
     [self statistics_getMedianStatistic:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getReproductiveStatistic:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getReproductiveStatistic:callback];
+}
+
+RCT_EXPORT_METHOD(getReproductiveStatisticWithOptions:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getReproductiveStatisticWithParameters:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getSymptomStatisticWithOptions:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getReproductiveStatisticWithParameters:input callback:callback];
 }
 
 - (HKHealthStore *)_initializeHealthStore {

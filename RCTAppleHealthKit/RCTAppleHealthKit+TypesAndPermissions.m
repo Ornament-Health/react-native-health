@@ -17,7 +17,7 @@
     UIDevice *deviceInfo = [UIDevice currentDevice];
     float systemVersion = deviceInfo.systemVersion.floatValue;
 
-    // Characteristic Identifiers
+    // MARK: Characteristic Identifiers
     if ([@"Height" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
     } else if ([@"Weight" isEqualToString: key]) {
@@ -32,7 +32,7 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierWaistCircumference];
     }
 
-    // Body Measurements
+    // MARK: Body Measurements
     if ([@"BodyMass" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyMass];
     } else if ([@"BodyFatPercentage" isEqualToString: key]) {
@@ -43,7 +43,7 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierLeanBodyMass];
     }
 
-    // Hearing Identifiers
+    // MARK: Hearing Identifiers
     if (@available(iOS 13.0, *)) {
         if ([@"EnvironmentalAudioExposure" isEqualToString:key]) {
             return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierEnvironmentalAudioExposure];
@@ -52,7 +52,7 @@
         }
     }
 
-    // Fitness Identifiers
+    // MARK: Fitness Identifiers
     if ([@"Steps" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount];
     } else if ([@"StepCount" isEqualToString: key]) {
@@ -87,7 +87,7 @@
         }
     }
 
-    // Symptoms
+    // MARK: Symptoms
     if (@available(iOS 13.6, *)) {
         if ([@"AbdominalCramps" isEqualToString: key]) {
             return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierAbdominalCramps];
@@ -174,7 +174,7 @@
     }
 
 
-    // Nutrition Identifiers
+    // MARK: Nutrition Identifiers
     if ([@"Biotin" isEqualToString:key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryBiotin];
     } else if ([@"Caffeine" isEqualToString:key]) {
@@ -267,7 +267,7 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierInsulinDelivery];
     }
 
-    // Vital Signs Identifiers
+    // MARK: Vital Signs Identifiers
     if ([@"HeartRate" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
     } else if ([@"WalkingHeartRateAverage" isEqualToString: key]) {
@@ -320,7 +320,7 @@
     }
 
 
-    // Mobility
+    // MARK: Mobility
     if (@available(iOS 14.0, *)) {
         if ([@"SixMinuteWalkTestDistance" isEqualToString: key]) {
            return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierSixMinuteWalkTestDistance];
@@ -335,7 +335,7 @@
     }
 
 
-    // Reproductive health
+    // MARK: Reproductive health
     if ([@"MenstrualFlow" isEqualToString: key]) {
         return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierMenstrualFlow];
     } else if ([@"IntermenstrualBleeding" isEqualToString: key]) {
@@ -366,17 +366,29 @@
         }
     }
 
-    // UV radiation
+    if (@available(iOS 16.0, *)) {
+        if ([@"InfrequentMenstrualCycles" isEqualToString: key]) {
+            return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierInfrequentMenstrualCycles];
+        } else if ([@"IrregularMenstrualCycles" isEqualToString: key]) {
+            return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierIrregularMenstrualCycles];
+        } else if ([@"PersistentIntermenstrualBleeding" isEqualToString: key]) {
+            return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierPersistentIntermenstrualBleeding];
+        } else if ([@"ProlongedMenstrualPeriods" isEqualToString: key]) {
+            return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierProlongedMenstrualPeriods];
+        }
+    }
+
+    // MARK: UV radiation
     if ([@"UvExposure" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierUVExposure];
     }
 
-    // Sleep
+    // MARK: Sleep
     if ([@"SleepAnalysis" isEqualToString: key]) {
         return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierSleepAnalysis];
     }
 
-    // workouts
+    // MARK: workouts
     if ([@"MindfulSession" isEqualToString: key] && systemVersion >= 10.0) {
         return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierMindfulSession];
     } else if ([@"MindfulSession" isEqualToString: key]){
@@ -385,17 +397,17 @@
         return [HKObjectType workoutType];
     }
 
-    // Lab and tests
+    // MARK: Lab and tests
     if ([@"BloodAlcoholContent" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodAlcoholContent];
     }
     
-    // Activity Summary
+    // MARK: Activity Summary
     if ([@"ActivitySummary" isEqualToString:key]){
         return [HKObjectType activitySummaryType];
     }
     
-    // Clinical Records
+    // MARK: Clinical Records
     if ([@"AllergyRecord" isEqualToString:key]) {
         return [RCTAppleHealthKit clinicalTypeFromName:@"AllergyRecord"];
     } else if ([@"ConditionRecord" isEqualToString:key]) {
@@ -418,7 +430,7 @@
 }
 
 - (nullable HKObjectType *)getWritePermFromText:(nonnull NSString*) key {
-    // Body Measurements
+    // MARK: Body Measurements
     if ([@"Height" isEqualToString:key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeight];
     } else if ([@"WaistCircumference" isEqualToString:key]) {
@@ -437,7 +449,7 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBodyTemperature];
     }
 
-    // Fitness Identifiers
+    // MARK: Fitness Identifiers
     if ([@"Steps" isEqualToString:key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierStepCount];
     } else if ([@"StepCount" isEqualToString:key]) {
@@ -456,7 +468,7 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierFlightsClimbed];
     }
 
-    // Nutrition Identifiers
+    // MARK: Nutrition Identifiers
     if ([@"Biotin" isEqualToString:key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierDietaryBiotin];
     } else if ([@"Caffeine" isEqualToString:key]) {
@@ -537,22 +549,22 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodGlucose];
     }
 
-    // Sleep
+    // MARK: Sleep
     if ([@"SleepAnalysis" isEqualToString:key]) {
         return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierSleepAnalysis];
     }
 
-    // Mindfulness
+    // MARK: Mindfulness
     if ([@"MindfulSession" isEqualToString:key]) {
         return [HKObjectType categoryTypeForIdentifier:HKCategoryTypeIdentifierMindfulSession];
     }
 
-    // Workout
+    // MARK: Workout
     if ([@"Workout" isEqualToString:key]) {
         return [HKObjectType workoutType];
     }
 
-    // Lab and tests
+    // MARK: Lab and tests
     if ([@"BloodAlcoholContent" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodAlcoholContent];
     }
