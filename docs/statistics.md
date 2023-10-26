@@ -2,38 +2,27 @@
 
 Query statistic (aggregated) biomarkers.
 
-| Value                                       | Methods                            |
-|---------------------------------------------|------------------------------------|
-| bodyMass (body weight)                      | getStatisticBodyMass               |
-| bloodPressureSystolic (systolic pressure)   | getStatisticBloodPressureSystolic  |
-| bloodPressureDiastolic (diastolic pressure) | getStatisticBloodPressureDiastolic |
-| bloodGlucose (blood glucose)                | getStatisticBloodGlucose           |
-| bodyMassIndex (body mass index)             | getStatisticBodyMassIndex          |
-| height (body height)                        | getStatisticHeight                 |
-| stepCount (number of steps)                 | getStatisticStepCount              |
-| heartRate (pulse)                           | getStatisticHeartRate              |
-| bodyTemperature (body temperature)          | getStatisticBodyTemperature        |
-| oxygenSaturation (oxygen saturation)        | getStatisticOxygenSaturation       |
-| restingHeartRate (resting heart rate)       | getStatisticRestingHeartRate       |
-| Dietary                                     |                                    |
-| energyConsumed (energy value)               | getStatisticDietaryEnergyConsumed  |
-| protein (protein)                           | getStatisticDietaryProtein         |
-| fiber (cellulose)                           | getStatisticDietaryFiber           |
-| totalFat (fats)                             | getStatisticDietaryTotalFat        |
-| water                                       | getStatisticDietaryWater (water)   |
-| sugar                                       | getStatisticDietarySugar (sugar)   |
-| fatSaturated                                | getStatisticDietaryFatSaturated    |
-| cholesterol                                 | getStatisticDietaryCholesterol     |
-| carbohydrates                               | getStatisticDietaryCarbohydrates   |
-| calcium                                     | getStatisticDietaryCalcium         |
-| iron                                        | getStatisticDietaryIron            |
-| potassium                                   | getStatisticDietaryPotassium       |
-| sodium                                      | getStatisticDietarySodium          |
-| vitaminA                                    | getStatisticDietaryVitaminA        |
-| vitaminC                                    | getStatisticDietaryVitaminC        |
-| vitaminD                                    | getStatisticDietarySugar           |
-| Lab and Test Results                        ||
-| insulinDelivery (insulin delivery)          | getStatisticInsulinDelivery        |
+|Value|Methods|
+|---|---|
+|bodyMass (вес)|getStatisticBodyMass|
+|bloodPressureSystolic (систолическое давление)|getStatisticBloodPressureSystolic|
+|bloodPressureDiastolic (диастолическое давление)|getStatisticBloodPressureDiastolic|
+|bloodGlucose (глюкоза в крови)|getStatisticBloodGlucose|
+|bodyMassIndex (индекс массы тела)|getStatisticBodyMassIndex|
+|height (рост)|getStatisticHeight|
+|stepCount (количество шагов)|getStatisticStepCount|
+|heartRate (пульс)|getStatisticHeartRate|
+|bodyTemperature (температура тела)|getStatisticBodyTemperature|
+|oxygenSaturation (насыщение кислородом)|getStatisticOxygenSaturation|
+|restingHeartRate (пульс в покое)|getStatisticRestingHeartRate|
+|Dietary| |
+|energyConsumed (энергетическая ценность)|getStatisticDietaryEnergyConsumed|
+|protein (белок)|getStatisticDietaryProtein|
+|fiber (клетчатка)|getStatisticDietaryFiber|
+|totalFat (жиры)|getStatisticDietaryTotalFat|
+|water|getStatisticDietaryWater (вода)|
+|Lab and Test Results||
+|insulinDelivery (подача инсулина)|getStatisticInsulinDelivery|
 
 
 
