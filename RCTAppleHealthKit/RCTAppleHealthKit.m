@@ -701,6 +701,12 @@ RCT_EXPORT_METHOD(getStatisticDietaryWater:(NSDictionary *)input callback:(RCTRe
     [self statistics_getStatisticDietaryWater:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietarySugar:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getStatisticInsulinDelivery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];

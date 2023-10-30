@@ -131,6 +131,7 @@
                         quantity:HKQuantityTypeIdentifierDietaryProtein
                             unit:unit];
 }
+
 - (void)statistics_getStatisticDietaryFiber:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
@@ -143,6 +144,7 @@
                         quantity:HKQuantityTypeIdentifierDietaryFiber
                             unit:unit];
 }
+
 - (void)statistics_getStatisticDietaryTotalFat:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
@@ -155,6 +157,7 @@
                         quantity:HKQuantityTypeIdentifierDietaryFatTotal
                             unit:unit];
 }
+
 - (void)statistics_getStatisticDietaryWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
@@ -167,6 +170,20 @@
                         quantity:HKQuantityTypeIdentifierDietaryWater
                             unit:unit];
 }
+
+- (void)statistics_getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietarySugar
+                            unit:unit];
+}
+
 - (void)statistics_getStatisticInsulinDelivery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {

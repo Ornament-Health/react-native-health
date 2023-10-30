@@ -21,6 +21,7 @@ Query statistic (aggregated) biomarkers.
 |fiber (клетчатка)|getStatisticDietaryFiber|
 |totalFat (жиры)|getStatisticDietaryTotalFat|
 |water|getStatisticDietaryWater (вода)|
+|sugar|getStatisticDietarySugar (сахар)|
 |Lab and Test Results||
 |insulinDelivery (подача инсулина)|getStatisticInsulinDelivery|
 
