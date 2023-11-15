@@ -22,6 +22,16 @@ Query statistic (aggregated) biomarkers.
 |totalFat (жиры)|getStatisticDietaryTotalFat|
 |water|getStatisticDietaryWater (вода)|
 |sugar|getStatisticDietarySugar (сахар)|
+|fatSaturated|getStatisticDietaryFatSaturated|
+|cholesterol|getStatisticDietaryCholesterol|
+|carbohydrates|getStatisticDietaryCarbohydrates|
+|calcium|getStatisticDietaryCalcium|
+|iron|getStatisticDietaryIron|
+|potassium|getStatisticDietaryPotassium|
+|sodium|getStatisticDietarySodium|
+|vitaminA|getStatisticDietaryVitaminA|
+|vitaminC|getStatisticDietaryVitaminC|
+|vitaminD|getStatisticDietarySugar|
 |Lab and Test Results||
 |insulinDelivery (подача инсулина)|getStatisticInsulinDelivery|
 

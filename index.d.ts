@@ -554,6 +554,53 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
+    getStatisticDietaryFatSaturated(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryCholesterol(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryCarbohydrates(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryCalcium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryIron(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    getStatisticDietaryPotassium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    getStatisticDietarySodium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    getStatisticDietaryVitaminA(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryVitaminC(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryVitaminD(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
     getStatisticInsulinDelivery(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
