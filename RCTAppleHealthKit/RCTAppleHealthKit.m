@@ -677,10 +677,10 @@ RCT_EXPORT_METHOD(getStatisticDietaryEnergyConsumed:(NSDictionary *)input callba
     [self statistics_getStatisticDietaryEnergyConsumed:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(getStatisticDietaryProtein:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getStatisticDietaryCarbohydrates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self statistics_getStatisticDietaryProtein:input callback:callback];
+    [self statistics_getStatisticDietaryCarbohydrates:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getStatisticDietaryFiber:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -689,22 +689,28 @@ RCT_EXPORT_METHOD(getStatisticDietaryFiber:(NSDictionary *)input callback:(RCTRe
     [self statistics_getStatisticDietaryFiber:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietarySugar:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getStatisticDietaryTotalFat:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
     [self statistics_getStatisticDietaryTotalFat:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(getStatisticDietaryWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getStatisticDietaryFatMonounsaturated:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self statistics_getStatisticDietaryWater:input callback:callback];
+    [self statistics_getStatisticDietaryFatMonounsaturated:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getStatisticDietaryFatPolyunsaturated:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self statistics_getStatisticDietarySugar:input callback:callback];
+    [self statistics_getStatisticDietaryFatPolyunsaturated:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getStatisticDietaryFatSaturated:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -719,10 +725,88 @@ RCT_EXPORT_METHOD(getStatisticDietaryCholesterol:(NSDictionary *)input callback:
     [self statistics_getStatisticDietaryCholesterol:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(getStatisticDietaryCarbohydrates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getStatisticDietaryProtein:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self statistics_getStatisticDietaryCarbohydrates:input callback:callback];
+    [self statistics_getStatisticDietaryProtein:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryVitaminA:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryVitaminA:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryThiamin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryThiamin:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryRiboflavin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryRiboflavin:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryNiacin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryNiacin:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryPantothenicAcid:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryPantothenicAcid:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryVitaminB6:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryVitaminB6:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryBiotin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryBiotin:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryVitaminB12:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryVitaminB12:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryVitaminC:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryVitaminC:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryVitaminD:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryVitaminD:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryVitaminE:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryVitaminE:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryVitaminK:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryVitaminK:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryFolate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryFolate:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getStatisticDietaryCalcium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -731,10 +815,28 @@ RCT_EXPORT_METHOD(getStatisticDietaryCalcium:(NSDictionary *)input callback:(RCT
     [self statistics_getStatisticDietaryCalcium:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getStatisticDietaryChloride:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryChloride:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getStatisticDietaryIron:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
     [self statistics_getStatisticDietaryIron:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryMagnesium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryMagnesium:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryPhosphorus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryPhosphorus:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getStatisticDietaryPotassium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -749,22 +851,58 @@ RCT_EXPORT_METHOD(getStatisticDietarySodium:(NSDictionary *)input callback:(RCTR
     [self statistics_getStatisticDietarySodium:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(getStatisticDietaryVitaminA:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getStatisticDietaryZinc:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self statistics_getStatisticDietaryVitaminA:input callback:callback];
+    [self statistics_getStatisticDietaryZinc:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(getStatisticDietaryVitaminC:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getStatisticDietaryWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self statistics_getStatisticDietaryVitaminC:input callback:callback];
+    [self statistics_getStatisticDietaryWater:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(getStatisticDietaryVitaminD:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(getStatisticDietaryCaffeine:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self statistics_getStatisticDietaryVitaminD:input callback:callback];
+    [self statistics_getStatisticDietaryCaffeine:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryChromium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryChromium:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryCopper:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryCopper:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryIodine:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryIodine:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryManganese:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryManganese:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietaryMolybdenum:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryMolybdenum:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticDietarySelenium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietarySelenium:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getStatisticInsulinDelivery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)

@@ -524,42 +524,10 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
+    // Dietary
+
+    // Macronutrients
     getStatisticDietaryEnergyConsumed(
-      options: HealthStatisticsDietaryInputOptions,
-      callback: (err: string, results: Array<HealthValue>) => void,
-    ): void
-
-    getStatisticDietaryProtein(
-      options: HealthStatisticsDietaryInputOptions,
-      callback: (err: string, results: Array<HealthValue>) => void,
-    ): void
-
-    getStatisticDietaryFiber(
-      options: HealthStatisticsDietaryInputOptions,
-      callback: (err: string, results: Array<HealthValue>) => void,
-    ): void
-
-    getStatisticDietaryTotalFat(
-      options: HealthStatisticsDietaryInputOptions,
-      callback: (err: string, results: Array<HealthValue>) => void,
-    ): void
-
-    getStatisticDietaryWater(
-      options: HealthStatisticsDietaryInputOptions,
-      callback: (err: string, results: Array<HealthValue>) => void,
-    ): void
-
-    getStatisticDietarySugar(
-      options: HealthStatisticsDietaryInputOptions,
-      callback: (err: string, results: Array<HealthValue>) => void,
-    ): void
-
-    getStatisticDietaryFatSaturated(
-      options: HealthStatisticsDietaryInputOptions,
-      callback: (err: string, results: Array<HealthValue>) => void,
-    ): void
-
-    getStatisticDietaryCholesterol(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
@@ -569,24 +537,84 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
-    getStatisticDietaryCalcium(
+    getStatisticDietaryFiber(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    
+    getStatisticDietarySugar(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    
+    getStatisticDietaryTotalFat(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    
+    getStatisticDietaryFatMonounsaturated(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    
+    getStatisticDietaryFatPolyunsaturated(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    
+    getStatisticDietaryFatSaturated(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    
+    getStatisticDietaryCholesterol(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+    
+    getStatisticDietaryProtein(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void 
+
+    // Vitamins
+
+    getStatisticDietaryVitaminA(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
-    getStatisticDietaryIron(
+    getStatisticDietaryThiamin(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    getStatisticDietaryPotassium(
+
+    getStatisticDietaryRiboflavin(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    getStatisticDietarySodium(
+
+    getStatisticDietaryNiacin(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    getStatisticDietaryVitaminA(
+
+    getStatisticDietaryPantothenicAcid(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryVitaminB6(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryBiotin(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryVitaminB12(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
@@ -597,6 +625,109 @@ declare module 'react-native-health' {
     ): void
 
     getStatisticDietaryVitaminD(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryVitaminE(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryVitaminK(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryFolate(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    // Minerals
+
+    getStatisticDietaryCalcium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryChloride(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryIron(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryMagnesium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryPhosphorus(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryPotassium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietarySodium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryZinc(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    // Hydration
+
+    getStatisticDietaryWater(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    // Caffeination
+
+    getStatisticDietaryCaffeine(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    // Ultratrace Minerals
+
+    getStatisticDietaryChromium(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryCopper(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryIodine(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryManganese(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietaryMolybdenum(
+      options: HealthStatisticsDietaryInputOptions,
+      callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    getStatisticDietarySelenium(
       options: HealthStatisticsDietaryInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void

@@ -16,22 +16,51 @@ Query statistic (aggregated) biomarkers.
 |oxygenSaturation (насыщение кислородом)|getStatisticOxygenSaturation|
 |restingHeartRate (пульс в покое)|getStatisticRestingHeartRate|
 |Dietary| |
-|energyConsumed (энергетическая ценность)|getStatisticDietaryEnergyConsumed|
-|protein (белок)|getStatisticDietaryProtein|
-|fiber (клетчатка)|getStatisticDietaryFiber|
-|totalFat (жиры)|getStatisticDietaryTotalFat|
-|water|getStatisticDietaryWater (вода)|
-|sugar|getStatisticDietarySugar (сахар)|
-|fatSaturated|getStatisticDietaryFatSaturated|
-|cholesterol|getStatisticDietaryCholesterol|
-|carbohydrates|getStatisticDietaryCarbohydrates|
-|calcium|getStatisticDietaryCalcium|
-|iron|getStatisticDietaryIron|
-|potassium|getStatisticDietaryPotassium|
-|sodium|getStatisticDietarySodium|
-|vitaminA|getStatisticDietaryVitaminA|
-|vitaminC|getStatisticDietaryVitaminC|
-|vitaminD|getStatisticDietarySugar|
+|Macronutrients| |
+|EnergyConsumed|getStatisticDietaryEnergyConsumed|
+|Carbohydrates|geStatisticDietaryCarbohydrates|
+|Fiber|getStatisticDietaryFiber|
+|Sugar|getStatisticDietarySugar|
+|TotalFat|getStatisticDietaryTotalFat|
+|FatMonounsaturated|getStatisticDietaryFatMonounsaturated|
+|FatPolyunsaturated|getStatisticDietaryFatPolyunsaturated|
+|FatSaturated|getStatisticDietaryFatSaturated|
+|Cholesterol|getStatisticDietaryCholesterol|
+|Protein|getStatisticDietaryProtein|
+|Vitamins| |
+|VitaminA|getStatisticDietaryVitaminA|
+|Thiamin|getStatisticDietaryThiamin|
+|Riboflavin|getStatisticDietaryRiboflavin|
+|Niacin|getStatisticDietaryNiacin|
+|PantothenicAcid|getStatisticDietaryPantothenicAcid|
+|VitaminB6|getStatisticDietaryVitaminB6|
+|Biotin|getStatisticDietaryBiotin|
+|VitaminB12|getStatisticDietaryVitaminB12|
+|VitaminC|getStatisticDietaryVitaminC|
+|VitaminD|getStatisticDietaryVitaminD|
+|VitaminE|getStatisticDietaryVitaminE|
+|VitaminK|getStatisticDietaryVitaminK|
+|Folate|getStatisticDietaryFolate|
+|Minerals| |
+|Calcium|getStatisticDietaryCalcium|
+|Chloride|getStatisticDietaryChloride|
+|Iron|getStatisticDietaryIron|
+|Magnesium|getStatisticDietaryMagnesium|
+|Phosphorus|getStatisticDietaryPhosphorus|
+|Potassium|getStatisticDietaryPotassium|
+|Sodium|getStatisticDietarySodium|
+|Zinc|getStatisticDietaryZinc|
+|Hydration| |
+|Water|getStatisticDietaryWater|
+|Caffeination| |
+|Caffeine|getStatisticDietaryCaffeine|
+|Ultratrace Minerals| |
+|Chromium|getStatisticDietaryChromium|
+|Copper|getStatisticDietaryCopper|
+|Iodine|getStatisticDietaryIodine|
+|Manganese|getStatisticDietaryManganese|
+|Molybdenum|getStatisticDietaryMolybdenum|
+|Selenium|getStatisticDietarySelenium|
 |Lab and Test Results||
 |insulinDelivery (подача инсулина)|getStatisticInsulinDelivery|
 

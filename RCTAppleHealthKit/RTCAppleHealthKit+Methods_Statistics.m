@@ -104,6 +104,7 @@
 }
 
 // MARK: - Dietary
+// MARK: - Macronutrients
 
 - (void)statistics_getStatisticDietaryEnergyConsumed:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
@@ -119,7 +120,7 @@
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryProtein:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+- (void)statistics_getStatisticDietaryCarbohydrates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
         callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
@@ -128,7 +129,7 @@
     HKUnit *unit = HKUnit.gramUnit;
     [self basicStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryProtein
+                        quantity:HKQuantityTypeIdentifierDietaryCarbohydrates
                             unit:unit];
 }
 
@@ -145,6 +146,19 @@
                             unit:unit];
 }
 
+- (void)statistics_getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietarySugar
+                            unit:unit];
+}
+
 - (void)statistics_getStatisticDietaryTotalFat:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
@@ -158,20 +172,7 @@
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
-    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
-    if (aggregatorType != 3) {
-        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
-        return;
-    }
-    HKUnit *unit = HKUnit.literUnit;
-    [self basicStatisticsRequest:input
-                        callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryWater
-                            unit:unit];
-}
-
-- (void)statistics_getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+- (void)statistics_getStatisticDietaryFatMonounsaturated:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
         callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
@@ -180,7 +181,20 @@
     HKUnit *unit = HKUnit.gramUnit;
     [self basicStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietarySugar
+                        quantity:HKQuantityTypeIdentifierDietaryFatMonounsaturated
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryFatPolyunsaturated:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryFatPolyunsaturated
                             unit:unit];
 }
 
@@ -210,7 +224,7 @@
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryCarbohydrates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+- (void)statistics_getStatisticDietaryProtein:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
         callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
@@ -219,9 +233,182 @@
     HKUnit *unit = HKUnit.gramUnit;
     [self basicStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryCarbohydrates
+                        quantity:HKQuantityTypeIdentifierDietaryProtein
                             unit:unit];
 }
+
+// MARK: - Vitamins
+
+- (void)statistics_getStatisticDietaryVitaminA:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryVitaminA
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryThiamin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryThiamin
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryRiboflavin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback; {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryRiboflavin
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryNiacin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryNiacin
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryPantothenicAcid:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryPantothenicAcid
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryVitaminB6:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryVitaminB6
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryBiotin:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryBiotin
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryVitaminB12:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryVitaminB12
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryVitaminC:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryVitaminC
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryVitaminD:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryVitaminD
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryVitaminE:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryVitaminE
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryVitaminK:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryVitaminK
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryFolate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryFolate
+                            unit:unit];
+}
+
+// MARK: - Minerals
 
 - (void)statistics_getStatisticDietaryCalcium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
@@ -236,6 +423,19 @@
                             unit:unit];
 }
 
+- (void)statistics_getStatisticDietaryChloride:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryChloride
+                            unit:unit];
+}
+
 - (void)statistics_getStatisticDietaryIron:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
@@ -246,6 +446,32 @@
     [self basicStatisticsRequest:input
                         callback:callback
                         quantity:HKQuantityTypeIdentifierDietaryIron
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryMagnesium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryMagnesium
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryPhosphorus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryPhosphorus
                             unit:unit];
 }
 
@@ -275,7 +501,7 @@
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryVitaminA:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+- (void)statistics_getStatisticDietaryZinc:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
         callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
@@ -284,24 +510,28 @@
     HKUnit *unit = HKUnit.gramUnit;
     [self basicStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryVitaminA
+                        quantity:HKQuantityTypeIdentifierDietaryZinc
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryVitaminC:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+// MARK: - Hydration
+
+- (void)statistics_getStatisticDietaryWater:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
         callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
         return;
     }
-    HKUnit *unit = HKUnit.gramUnit;
+    HKUnit *unit = HKUnit.literUnit;
     [self basicStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryVitaminC
+                        quantity:HKQuantityTypeIdentifierDietaryWater
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryVitaminD:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+// MARK: - Caffeination
+
+- (void)statistics_getStatisticDietaryCaffeine:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
     if (aggregatorType != 3) {
         callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
@@ -310,7 +540,87 @@
     HKUnit *unit = HKUnit.gramUnit;
     [self basicStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryVitaminD
+                        quantity:HKQuantityTypeIdentifierDietaryCaffeine
+                            unit:unit];
+}
+
+// MARK: - Ultratrace Minerals
+
+- (void)statistics_getStatisticDietaryChromium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryChromium
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryCopper:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryCopper
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryIodine:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryIodine
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryManganese:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryManganese
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietaryMolybdenum:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietaryMolybdenum
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietarySelenium:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietarySelenium
                             unit:unit];
 }
 
