@@ -84,4 +84,32 @@
 
 - (void)statistics_getStatisticInsulinDelivery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 
+// MARK: - Activity
+
+- (void)statistics_getStatisticDistanceWheelchair:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+- (void)statistics_getStatisticAppleExerciseTime:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+// MARK: - Body Measurments
+
+- (void)statistics_getStatisticAppleSleepingWristTemperature:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+// MARK: - Vital Signs
+
+- (void)statistics_getStatisticHeartRateRecoveryOneMinute:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+- (void)statistics_getStatisticAtrialFibrillationBurden:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+// MARK: - Lab And Test Results
+
+- (void)statistics_getStatisticNumberOfTimesFallen:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+- (void)statistics_getStatisticPeakExpiratoryFlowRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+- (void)statistics_getStatisticPeripheralPerfusionIndex:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+// MARK: - UV Exposure
+
+- (void)statistics_getStatisticUvExposure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
 @end

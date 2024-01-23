@@ -637,6 +637,136 @@
                             unit:unit];
 }
 
+// MARK: - Activity
+
+- (void)statistics_getStatisticDistanceWheelchair:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.meterUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDistanceWheelchair
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticAppleExerciseTime:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.minuteUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierAppleExerciseTime
+                            unit:unit];
+}
+
+// MARK: - Body Measurments
+
+- (void)statistics_getStatisticAppleSleepingWristTemperature:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType == 3) {
+        callback(@[RCTMakeError(@"aggregator shouldn't be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.degreeCelsiusUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierAppleSleepingWristTemperature
+                            unit:unit];
+}
+
+// MARK: - Vital Signs
+
+- (void)statistics_getStatisticHeartRateRecoveryOneMinute:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType == 3) {
+        callback(@[RCTMakeError(@"aggregator shouldn't be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *count = [HKUnit countUnit];
+    HKUnit *minute = [HKUnit minuteUnit];
+
+    HKUnit *unit = [RCTAppleHealthKit hkUnitFromOptions:input key:@"unit" withDefault:[count unitDividedByUnit:minute]];
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierHeartRateRecoveryOneMinute
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticAtrialFibrillationBurden:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType == 3) {
+        callback(@[RCTMakeError(@"aggregator shouldn't be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.percentUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierAtrialFibrillationBurden
+                            unit:unit];
+}
+
+// MARK: - Lab And Test Results
+
+- (void)statistics_getStatisticNumberOfTimesFallen:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType != 3) {
+        callback(@[RCTMakeError(@"aggregator should be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.countUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierNumberOfTimesFallen
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticPeakExpiratoryFlowRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType == 3) {
+        callback(@[RCTMakeError(@"aggregator shouldn't be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = [RCTAppleHealthKit hkUnitFromOptions:input key:@"unit" withDefault:[[HKUnit literUnit] unitDividedByUnit:[HKUnit minuteUnit]]];
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierPeakExpiratoryFlowRate
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticPeripheralPerfusionIndex:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType == 3) {
+        callback(@[RCTMakeError(@"aggregator shouldn't be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.percentUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierPeripheralPerfusionIndex
+                            unit:unit];
+}
+
+// MARK: - UV Exposure
+
+- (void)statistics_getStatisticUvExposure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    NSUInteger aggregatorType = [RCTAppleHealthKit uintFromOptions:input key:@"aggregator" withDefault:-1];
+    if (aggregatorType == 3) {
+        callback(@[RCTMakeError(@"aggregator shouldn't be CUMULATIVE_SUM = 3", nil, nil)]);
+        return;
+    }
+    HKUnit *unit = HKUnit.countUnit;
+    [self basicStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierUVExposure
+                            unit:unit];
+}
+
 // MARK: - Private
 
 - (void)basicStatisticsRequest:(NSDictionary *)input

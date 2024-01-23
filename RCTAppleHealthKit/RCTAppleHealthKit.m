@@ -911,6 +911,60 @@ RCT_EXPORT_METHOD(getStatisticInsulinDelivery:(NSDictionary *)input callback:(RC
     [self statistics_getStatisticInsulinDelivery:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getStatisticDistanceWheelchair:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDistanceWheelchair:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticAppleExerciseTime:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticAppleExerciseTime:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticAppleSleepingWristTemperature:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticAppleSleepingWristTemperature:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticHeartRateRecoveryOneMinute:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticHeartRateRecoveryOneMinute:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticAtrialFibrillationBurden:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticAtrialFibrillationBurden:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticNumberOfTimesFallen:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticNumberOfTimesFallen:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticPeakExpiratoryFlowRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticPeakExpiratoryFlowRate:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticPeripheralPerfusionIndex:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticPeripheralPerfusionIndex:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getStatisticUvExposure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticUvExposure:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];

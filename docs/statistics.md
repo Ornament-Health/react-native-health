@@ -63,7 +63,19 @@ Query statistic (aggregated) biomarkers.
 |Selenium|getStatisticDietarySelenium|
 |Lab and Test Results||
 |insulinDelivery (подача инсулина)|getStatisticInsulinDelivery|
-
+|number Of Times Fallen|getStatisticNumberOfTimesFallen|
+|Peak Expiratory Flow Rate|getStatisticPeakExpiratoryFlowRate|
+|Peripheral Perfusion Index|getStatisticPeripheralPerfusionIndex|
+|Activity||
+|Distance Wheelchair|getStatisticDistanceWheelchair|
+|Apple Exercise Time|getStatisticAppleExerciseTime|
+|Body Measurments||
+|Apple Sleeping Wrist Temperature|getStatisticAppleSleepingWristTemperature|
+|Vital Signs||
+|Heart Rate Recovery One Minute|getStatisticHeartRateRecoveryOneMinute|
+|Atrial Fibrillation Burden|getStatisticAtrialFibrillationBurden|
+|UV Exposure||
+|UV Exposure|getStatisticUvExposure|
 
 
 ## Example call
@@ -76,16 +88,6 @@ let options = {
   startDate: new Date(2021, 0, 0).toISOString(), // optional
   endDate: new Date().toISOString(), // optional; default now
 }
-```
-For dietary and insulinDelivery:
-```typescript
-let options: HealthStatisticsDietaryInputOptions = {
-        aggregator: HealthStatisticsDietaryAggregatorType.CUMULATIVE_SUM,
-        interval: HealthStatisticsIntervalType.DAY, // optional; default HealthStatisticsIntervalType.MONTH
-        unit: 'calorie', // optional
-        startDate: new Date(2021, 0, 0).toISOString(),
-        endDate: new Date().toISOString(),
-      }
 ```
 
 Method call example:
@@ -107,7 +109,7 @@ AppleHealthKit.getStatisticBodyMass(
 
 |name|type|required|
 |---|---|---|
-|aggregator|HealthStatisticsCommonAggregatorType or HealthStatisticsStepsAggregatorType or HealthStatisticsDietaryAggregatorType|✓|
+|aggregator|HealthStatisticsCommonAggregatorType or HealthStatisticsStepsAggregatorType or CumulativeAggregatorsType|✓|
 |interval|HealthStatisticsIntervalType||
 |unit|string||
 |startDate|string|✓|
@@ -131,9 +133,8 @@ enum CumulativeAggregatorsType {
 
 export type HealthStatisticsCommonAggregatorType = GenericAggregatorsType | AverageAggregatorsType;
 
-export type HealthStatisticsStepsAggregatorType = GenericAggregatorsType | CumulativeAggregatorsType;
+export type HealthStatisticsStepsAggregatorType = GenericAggregatorsType | CumulativeAggregatorsType
 
-export type HealthStatisticsDietaryAggregatorType = CumulativeAggregatorsType
 ```
 
 ## Response
