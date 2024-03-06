@@ -84,7 +84,6 @@ Query statistic (aggregated) biomarkers.
 let options = {
   aggregator: HealthStatisticsCommonAggregatorType.AVERAGE,
   interval: HealthStatisticsIntervalType.DAY, // optional; default HealthStatisticsIntervalType.MONTH
-  unit: 'pound', // optional;
   startDate: new Date(2021, 0, 0).toISOString(), // optional
   endDate: new Date().toISOString(), // optional; default now
 }
@@ -103,7 +102,7 @@ AppleHealthKit.getStatisticBodyMass(
   },
 )
 ```
-
+For dietary biomarkers (Macronutrients, Vitamins, Minerals, Hydration, Caffeination, Ultratrace Minerals types) could be calculated average or cumulative values.
 
 ## Request payload
 
