@@ -528,175 +528,175 @@ declare module 'react-native-health' {
 
     // Macronutrients
     getStatisticDietaryEnergyConsumed(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryCarbohydrates(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryFiber(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
     
     getStatisticDietarySugar(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
     
     getStatisticDietaryTotalFat(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
     
     getStatisticDietaryFatMonounsaturated(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
     
     getStatisticDietaryFatPolyunsaturated(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
     
     getStatisticDietaryFatSaturated(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
     
     getStatisticDietaryCholesterol(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
     
     getStatisticDietaryProtein(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void 
 
     // Vitamins
 
     getStatisticDietaryVitaminA(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryThiamin(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryRiboflavin(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryNiacin(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryPantothenicAcid(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryVitaminB6(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryBiotin(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryVitaminB12(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryVitaminC(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryVitaminD(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryVitaminE(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryVitaminK(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryFolate(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     // Minerals
 
     getStatisticDietaryCalcium(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryChloride(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryIron(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryMagnesium(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryPhosphorus(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryPotassium(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietarySodium(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticDietaryZinc(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     // Hydration
 
     getStatisticDietaryWater(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     // Caffeination
 
     getStatisticDietaryCaffeine(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
@@ -728,12 +728,12 @@ declare module 'react-native-health' {
     ): void
 
     getStatisticDietarySelenium(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
     getStatisticInsulinDelivery(
-      options: HealthStatisticsCumulativeInputOptions,
+      options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
