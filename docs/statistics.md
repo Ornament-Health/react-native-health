@@ -2,80 +2,84 @@
 
 Query statistic (aggregated) biomarkers.
 
-|Value|Methods|
-|---|---|
-|bodyMass (вес)|getStatisticBodyMass|
-|bloodPressureSystolic (систолическое давление)|getStatisticBloodPressureSystolic|
-|bloodPressureDiastolic (диастолическое давление)|getStatisticBloodPressureDiastolic|
-|bloodGlucose (глюкоза в крови)|getStatisticBloodGlucose|
-|bodyMassIndex (индекс массы тела)|getStatisticBodyMassIndex|
-|height (рост)|getStatisticHeight|
-|stepCount (количество шагов)|getStatisticStepCount|
-|heartRate (пульс)|getStatisticHeartRate|
-|bodyTemperature (температура тела)|getStatisticBodyTemperature|
-|oxygenSaturation (насыщение кислородом)|getStatisticOxygenSaturation|
-|restingHeartRate (пульс в покое)|getStatisticRestingHeartRate|
-|Dietary| |
-|Macronutrients| |
-|EnergyConsumed|getStatisticDietaryEnergyConsumed|
-|Carbohydrates|geStatisticDietaryCarbohydrates|
-|Fiber|getStatisticDietaryFiber|
-|Sugar|getStatisticDietarySugar|
-|TotalFat|getStatisticDietaryTotalFat|
-|FatMonounsaturated|getStatisticDietaryFatMonounsaturated|
-|FatPolyunsaturated|getStatisticDietaryFatPolyunsaturated|
-|FatSaturated|getStatisticDietaryFatSaturated|
-|Cholesterol|getStatisticDietaryCholesterol|
-|Protein|getStatisticDietaryProtein|
-|Vitamins| |
-|VitaminA|getStatisticDietaryVitaminA|
-|Thiamin|getStatisticDietaryThiamin|
-|Riboflavin|getStatisticDietaryRiboflavin|
-|Niacin|getStatisticDietaryNiacin|
-|PantothenicAcid|getStatisticDietaryPantothenicAcid|
-|VitaminB6|getStatisticDietaryVitaminB6|
-|Biotin|getStatisticDietaryBiotin|
-|VitaminB12|getStatisticDietaryVitaminB12|
-|VitaminC|getStatisticDietaryVitaminC|
-|VitaminD|getStatisticDietaryVitaminD|
-|VitaminE|getStatisticDietaryVitaminE|
-|VitaminK|getStatisticDietaryVitaminK|
-|Folate|getStatisticDietaryFolate|
-|Minerals| |
-|Calcium|getStatisticDietaryCalcium|
-|Chloride|getStatisticDietaryChloride|
-|Iron|getStatisticDietaryIron|
-|Magnesium|getStatisticDietaryMagnesium|
-|Phosphorus|getStatisticDietaryPhosphorus|
-|Potassium|getStatisticDietaryPotassium|
-|Sodium|getStatisticDietarySodium|
-|Zinc|getStatisticDietaryZinc|
-|Hydration| |
-|Water|getStatisticDietaryWater|
-|Caffeination| |
-|Caffeine|getStatisticDietaryCaffeine|
-|Ultratrace Minerals| |
-|Chromium|getStatisticDietaryChromium|
-|Copper|getStatisticDietaryCopper|
-|Iodine|getStatisticDietaryIodine|
-|Manganese|getStatisticDietaryManganese|
-|Molybdenum|getStatisticDietaryMolybdenum|
-|Selenium|getStatisticDietarySelenium|
-|Lab and Test Results||
-|insulinDelivery (подача инсулина)|getStatisticInsulinDelivery|
-|number Of Times Fallen|getStatisticNumberOfTimesFallen|
-|Peak Expiratory Flow Rate|getStatisticPeakExpiratoryFlowRate|
-|Peripheral Perfusion Index|getStatisticPeripheralPerfusionIndex|
-|Activity||
-|Distance Wheelchair|getStatisticDistanceWheelchair|
-|Apple Exercise Time|getStatisticAppleExerciseTime|
-|Body Measurments||
-|Apple Sleeping Wrist Temperature|getStatisticAppleSleepingWristTemperature|
-|Vital Signs||
-|Heart Rate Recovery One Minute|getStatisticHeartRateRecoveryOneMinute|
-|Atrial Fibrillation Burden|getStatisticAtrialFibrillationBurden|
-|UV Exposure||
-|UV Exposure|getStatisticUvExposure|
+| Value                    | Methods                                   |
+|--------------------------|-------------------------------------------|
+| bodyMass (body weight)   | getStatisticBodyMass                      |
+| bloodPressureSystolic (systolic pressure) | getStatisticBloodPressureSystolic         |
+| bloodPressureDiastolic (diastolic pressure) | getStatisticBloodPressureDiastolic        |
+| bloodGlucose (blood glucose) | getStatisticBloodGlucose                  |
+| bodyMassIndex (body mass index) | getStatisticBodyMassIndex                 |
+| height (body height)     | getStatisticHeight                        |
+| stepCount (number of steps) | getStatisticStepCount                     |
+| heartRate (pulse)        | getStatisticHeartRate                     |
+| bodyTemperature (body temperature) | getStatisticBodyTemperature               |
+| oxygenSaturation (oxygen saturation) | getStatisticOxygenSaturation              |
+| restingHeartRate (resting heart rate) | getStatisticRestingHeartRate              |
+| Dietary                  |                                           |
+| Macronutrients           |                                           |
+| energyConsumed (energy value) | getStatisticDietaryEnergyConsumed         |
+| protein (protein)        | getStatisticDietaryProtein                |
+| fiber (cellulose)        | getStatisticDietaryFiber                  |
+| totalFat (fats)          | getStatisticDietaryTotalFat               |
+| sugar                    | getStatisticDietarySugar (sugar)          |
+| fatSaturated             | getStatisticDietaryFatSaturated           |
+| fatMonounsaturated       | getStatisticDietaryFatMonounsaturated     |
+| fatPolyunsaturated       | getStatisticDietaryFatPolyunsaturated     |
+| cholesterol              | getStatisticDietaryCholesterol            |
+| carbohydrates            | getStatisticDietaryCarbohydrates          |
+| Vitamins                 |                                           |
+| vitaminA                 | getStatisticDietaryVitaminA               |
+| vitaminC                 | getStatisticDietaryVitaminC               |
+| vitaminD                 | getStatisticDietaryVitaminD               |
+| thiamin                  | getStatisticDietaryThiamin                |
+| riboflavin               | getStatisticDietaryRiboflavin             |
+| niacin                   | getStatisticDietaryNiacin                 |
+| pantothenicAcid          | getStatisticDietaryPantothenicAcid        |
+| vitaminB6                | getStatisticDietaryVitaminB6              |
+| biotin                   | getStatisticDietaryBiotin                 |
+| vitaminB12               | getStatisticDietaryVitaminB12             |
+| vitaminE                 | getStatisticDietaryVitaminE               |
+| vitaminK                 | getStatisticDietaryVitaminK               |
+| folate                   | getStatisticDietaryFolate                 |
+| calcium                  | getStatisticDietaryCalcium                |
+| iron                     | getStatisticDietaryIron                   |
+| potassium                | getStatisticDietaryPotassium              |
+| sodium                   | getStatisticDietarySodium                 |
+| Minerals                 |                                           |
+| calcium                  | getStatisticDietaryCalcium                |
+| chloride                 | getStatisticDietaryChloride               |
+| iron                     | getStatisticDietaryIron                   |
+| magnesium                | getStatisticDietaryMagnesium              |
+| phosphorus               | getStatisticDietaryPhosphorus             |
+| potassium                | getStatisticDietaryPotassium              |
+| sodium                   | getStatisticDietarySodium                 |
+| zinc                     | getStatisticDietaryZinc                   |
+| Hydration                |                                           |
+| water                    | getStatisticDietaryWater                  |
+| Caffeination             |                                           |
+| caffeine                 | getStatisticDietaryCaffeine               |
+| Ultratrace Minerals      |                                           |
+| chromium                 | getStatisticDietaryChromium               |
+| copper                   | getStatisticDietaryCopper                 |
+| iodine                   | getStatisticDietaryIodine                 |
+| manganese                | getStatisticDietaryManganese              |
+| molybdenum               | getStatisticDietaryMolybdenum             |
+| selenium                 | getStatisticDietarySelenium               |
+| Lab and Test Results     |                                           |
+| insulinDelivery (insulin delivery) | getStatisticInsulinDelivery               |
+| numberOfTimesFallen      | getStatisticNumberOfTimesFallen           |
+| peakExpiratoryFlowRate   | getStatisticPeakExpiratoryFlowRate        |
+| peripheralPerfusionIndex | getStatisticPeripheralPerfusionIndex      |
+| Activity                 |                                           |
+| distanceWheelchair       | getStatisticDistanceWheelchair            |
+| appleExerciseTime        | getStatisticAppleExerciseTime             |
+| Body Measurments         |                                           |
+| appleSleepingWristTemperature | getStatisticAppleSleepingWristTemperature |
+| Vital Signs              |                                           |
+| heartRateRecoveryOneMinute | getStatisticHeartRateRecoveryOneMinute    |
+| atrialFibrillationBurden | getStatisticAtrialFibrillationBurden      |
+| UV Exposure              |                                           |
+| uvExposure                | getStatisticUvExposure                    |
 
 
 ## Example call

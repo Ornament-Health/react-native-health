@@ -114,11 +114,11 @@
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryCarbohydrates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+- (void)statistics_getStatisticDietaryProtein:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     HKUnit *unit = HKUnit.gramUnit;
     [self basicDietaryStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryCarbohydrates
+                        quantity:HKQuantityTypeIdentifierDietaryProtein
                             unit:unit];
 }
 
@@ -127,14 +127,6 @@
     [self basicDietaryStatisticsRequest:input
                         callback:callback
                         quantity:HKQuantityTypeIdentifierDietaryFiber
-                            unit:unit];
-}
-
-- (void)statistics_getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
-    HKUnit *unit = HKUnit.gramUnit;
-    [self basicDietaryStatisticsRequest:input
-                        callback:callback
-                        quantity:HKQuantityTypeIdentifierDietarySugar
                             unit:unit];
 }
 
@@ -151,6 +143,14 @@
     [self basicDietaryStatisticsRequest:input
                         callback:callback
                         quantity:HKQuantityTypeIdentifierDietaryFatMonounsaturated
+                            unit:unit];
+}
+
+- (void)statistics_getStatisticDietarySugar:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    HKUnit *unit = HKUnit.gramUnit;
+    [self basicDietaryStatisticsRequest:input
+                        callback:callback
+                        quantity:HKQuantityTypeIdentifierDietarySugar
                             unit:unit];
 }
 
@@ -178,11 +178,11 @@
                             unit:unit];
 }
 
-- (void)statistics_getStatisticDietaryProtein:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+- (void)statistics_getStatisticDietaryCarbohydrates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
     HKUnit *unit = HKUnit.gramUnit;
     [self basicDietaryStatisticsRequest:input
                         callback:callback
-                        quantity:HKQuantityTypeIdentifierDietaryProtein
+                        quantity:HKQuantityTypeIdentifierDietaryCarbohydrates
                             unit:unit];
 }
 
