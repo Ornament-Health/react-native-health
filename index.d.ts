@@ -1,5 +1,3 @@
-import { HealthInputOptions } from 'react-native-health'
-
 declare module 'react-native-health' {
   export interface HealthKitPermissions {
     permissions: {
@@ -541,41 +539,41 @@ declare module 'react-native-health' {
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    
+
     getStatisticDietarySugar(
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    
+
     getStatisticDietaryTotalFat(
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    
+
     getStatisticDietaryFatMonounsaturated(
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    
+
     getStatisticDietaryFatPolyunsaturated(
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    
+
     getStatisticDietaryFatSaturated(
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    
+
     getStatisticDietaryCholesterol(
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
-    
+
     getStatisticDietaryProtein(
       options: HealthStatisticsCommonInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
-    ): void 
+    ): void
 
     // Vitamins
 
@@ -737,7 +735,7 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
-    // Activity 
+    // Activity
 
     getStatisticDistanceWheelchair(
       options: HealthStatisticsCumulativeInputOptions,
@@ -749,7 +747,7 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
-    // Body Measurments 
+    // Body Measurments
 
     getStatisticAppleSleepingWristTemperature(
       options: HealthStatisticsCommonInputOptions,
@@ -906,8 +904,8 @@ declare module 'react-native-health' {
     startDate: string
     eventTypeInt: number
     eventType: EventType
-  }  
-  
+  }
+
   enum GenericAggregatorsType {
     MIN = 0,
     MAX = 1,
@@ -934,7 +932,7 @@ declare module 'react-native-health' {
   export enum HealthStatisticsIntervalType {
     MONTH = 0,
     DAY = 1,
-  }    
+  }
 
   export interface HealthStatisticsCommonInputOptions
     extends HealthUnitOptions {
