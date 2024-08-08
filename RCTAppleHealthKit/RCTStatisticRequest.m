@@ -81,6 +81,9 @@
         case RTCAggregatorCumulativeSum: {
             return HKStatisticsOptionCumulativeSum;
         }
+        case RCTAggregatorTypeDailyAverage: {
+            return HKStatisticsOptionCumulativeSum;
+        }
         default: {
             return nil;
         }
@@ -105,6 +108,9 @@
             return nil;
         }
         case RTCAggregatorCumulativeSum: {
+            return statistics.sumQuantity;
+        }
+        case RCTAggregatorTypeDailyAverage: {
             return statistics.sumQuantity;
         }
         default: {

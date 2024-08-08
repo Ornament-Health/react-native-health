@@ -106,7 +106,7 @@ AppleHealthKit.getStatisticBodyMass(
   },
 )
 ```
-For dietary biomarkers (Macronutrients, Vitamins, Minerals, Hydration, Caffeination, Ultratrace Minerals types) could be calculated average or cumulative values.
+For dietary biomarkers (Macronutrients, Vitamins, Minerals, Hydration, Caffeination, Ultratrace Minerals types) could be calculated interval average, daily average or cumulative values.
 
 ## Request payload
 
@@ -128,6 +128,7 @@ enum GenericAggregatorsType {
 
 enum AverageAggregatorsType {
   AVERAGE = 2,
+  DAILY_AVERAGE = 6,
 }
 
 enum CumulativeAggregatorsType {
