@@ -915,6 +915,7 @@ declare module 'react-native-health' {
 
   enum AverageAggregatorsType {
     AVERAGE = 2,
+    DAILY_AVERAGE = 6,
   }
 
   enum CumulativeAggregatorsType {

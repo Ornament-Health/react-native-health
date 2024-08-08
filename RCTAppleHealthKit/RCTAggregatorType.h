@@ -11,5 +11,6 @@ typedef enum : NSUInteger {
     RCTAggregatorTypeAverage,
     RTCAggregatorCumulativeSum,
     RCTAggregatorTypeFirst,
-    RCTAggregatorTypeLast
+    RCTAggregatorTypeLast,
+    RCTAggregatorTypeDailyAverage
 } RCTAggregatorType;

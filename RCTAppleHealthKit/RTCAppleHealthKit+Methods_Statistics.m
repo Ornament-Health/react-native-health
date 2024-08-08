@@ -705,14 +705,21 @@
         [self averageDietaryStatisticsRequest:input
                             callback:callback
                             quantity:quantity
-                                unit:unit];
+                                unit:unit
+                                 dailyAverage:false];
     } else if (aggregatorType == 3) {
         [self basicStatisticsRequest:input
                             callback:callback
                             quantity:quantity
                                 unit:unit];
+    } else if (aggregatorType == 6) {
+        [self averageDietaryStatisticsRequest:input
+                            callback:callback
+                            quantity:quantity
+                                unit:unit
+                                 dailyAverage:true];
     } else {
-        callback(@[RCTMakeError(@"RNHealth: Aggregator should be CUMULATIVE_SUM = 3 or AVERAGE = 2", nil, nil)]);
+        callback(@[RCTMakeError(@"RNHealth: Aggregator should be AVERAGE = 2, CUMULATIVE_SUM = 3, DAILY_AVERAGE = 6", nil, nil)]);
         return;
     }
 }
@@ -720,7 +727,8 @@
 - (void)averageDietaryStatisticsRequest:(NSDictionary *)input
                       callback:(RCTResponseSenderBlock)callback
                       quantity:(HKQuantityTypeIdentifier)quantity
-                          unit:(HKUnit *)unit {
+                          unit:(HKUnit *)unit
+                           dailyAverage: (BOOL)dailyAverage {
 
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
@@ -834,15 +842,21 @@
         NSArray *intervals = [samplesOutput filteredArrayUsingPredicate:predicate];
         [groupedByInterval setObject:intervals forKey:name];
     }
-
+    
+    NSMutableSet *setOfDatesWithEntries = [NSMutableSet new];
     NSMutableArray *resultWithSumForInterval = [NSMutableArray new];
     for (NSString* key in groupedByInterval) {
         NSArray<__kindof NSDictionary *> *intervalValues = groupedByInterval[key];
         double intervalValue = 0;
         double entriesCount = 0;
+        setOfDatesWithEntries = [NSMutableSet new];
         for (NSDictionary *intervalValueObj in intervalValues) {
             intervalValue += [intervalValueObj[@"value"] doubleValue];
             entriesCount += 1;
+            NSDateFormatter *intervalDateFormatter = [[NSDateFormatter alloc] init];
+            [intervalDateFormatter setDateFormat:@"yyyy-MM-dd"];
+            NSString *intervalDay = [intervalDateFormatter stringFromDate:intervalValueObj[@"startDate"]];
+            [setOfDatesWithEntries addObject:intervalDay];
         }
 
         NSDate *startIntervalDate;
@@ -873,9 +887,24 @@
         resultForInterval[@"endDate"] = endDateString;
 
         double averageValue = 0;
-        if (entriesCount != 0) {
-            averageValue = intervalValue / entriesCount;
+        
+        if (dailyAverage) {
+            if (intervalType == RCTIntervalDay) {
+                if (entriesCount != 0) {
+                    averageValue = intervalValue / entriesCount;
+                }
+            } else {
+                double datesWithEntries = setOfDatesWithEntries.count;
+                if (datesWithEntries != 0) {
+                    averageValue = intervalValue / datesWithEntries;
+                }
+            }
+        } else {
+            if (entriesCount != 0) {
+                averageValue = intervalValue / entriesCount;
+            }
         }
+        
         resultForInterval[@"value"] = @(averageValue);
 
         NSString *json = [RCTAppleHealthKit stringFromObject:resultForInterval];
