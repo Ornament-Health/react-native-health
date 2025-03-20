@@ -925,6 +925,7 @@ declare module 'react-native-health' {
   export type HealthStatisticsCommonAggregatorType =
     | GenericAggregatorsType
     | AverageAggregatorsType
+    | CumulativeAggregatorsType
 
   export type HealthStatisticsStepsAggregatorType =
     | GenericAggregatorsType
