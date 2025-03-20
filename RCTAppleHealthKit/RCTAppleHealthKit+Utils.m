@@ -771,5 +771,19 @@ NSString * const kTypesKey = @"types";
     return sorted.lastObject;
 }
 
++ (NSArray *) buildSourcesForStatistics:(NSArray<__kindof HKSource *> * _Nullable)input {
+    NSMutableArray *sources = [NSMutableArray array];
+    if (input != nil) {
+        for (HKSource *source in input) {
+            NSDictionary *sourceDict = @{
+                @"name": source.name,
+                @"bundleId": source.bundleIdentifier
+            };
+            [sources addObject:sourceDict];
+        }
+    }
+    return sources;
+}
+
 
 @end

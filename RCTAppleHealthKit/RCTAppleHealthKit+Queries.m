@@ -1239,7 +1239,7 @@
 	// Create the query
 	HKStatisticsCollectionQuery *query = [[HKStatisticsCollectionQuery alloc] initWithQuantityType:request.quantityType
 																		   quantitySamplePredicate:predicate
-																						   options:request.statisticsOptions
+																						   options:request.statisticsOptions | HKStatisticsOptionSeparateBySource
 																						anchorDate:request.startDate
 																				intervalComponents:request.interval];
 
@@ -1266,7 +1266,9 @@
 										   NSMutableDictionary *elem = [[NSMutableDictionary alloc] initWithDictionary:@{
 												   @"value": @(value),
 												   @"startDate": [RCTAppleHealthKit buildStringFromDateForStatistics:result.startDate],
-												   @"endDate": [RCTAppleHealthKit buildStringFromDateForStatistics:result.endDate]
+												   @"endDate": [RCTAppleHealthKit buildStringFromDateForStatistics:result.endDate],
+                                                   @"sources": [RCTAppleHealthKit buildSourcesForStatistics:result.sources]
+                                                   
 										   }];
 										   NSString *json = [RCTAppleHealthKit stringFromObject:elem];
 										   NSString *hash = [RCTAppleHealthKit md5HashString:[request makeStringWithPrefix:json]];
