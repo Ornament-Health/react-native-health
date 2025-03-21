@@ -43,6 +43,7 @@ extern NSString * const kTypesKey;
 + (HKQuantity *)hkQuantityFromOptions:(NSDictionary *)options valueKey: (NSString *)valueKey unitKey: (NSString *)unitKey;
 + (NSDictionary *)metadataFromOptions:(NSDictionary *)options withDefault:(NSDictionary *)defaultValue;
 + (NSArray *)typesFromOptions:(NSDictionary *)options;
++ (HKSource *)sourceFromOptions:(NSDictionary *)options;
 
 + (NSArray *)formatWorkoutEvents:(NSArray *)workoutEvents;
 + (NSMutableArray *)reverseNSMutableArray:(NSMutableArray *)array;

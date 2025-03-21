@@ -942,6 +942,7 @@ declare module 'react-native-health' {
     interval?: HealthStatisticsIntervalType
     startDate?: string
     endDate?: string
+    source?: string
   }
 
   export interface HealthStatisticsStepsInputOptions extends HealthUnitOptions {
