@@ -896,7 +896,7 @@ declare module 'react-native-health' {
     PausedOrResumeRequest = 'pause or resume request',
     Lap = 'lap',
     Segment = 'segment',
-    Marker = 'marker'
+    Marker = 'marker',
   }
 
   export type HKWorkoutEventType = {
@@ -925,6 +925,7 @@ declare module 'react-native-health' {
   export type HealthStatisticsCommonAggregatorType =
     | GenericAggregatorsType
     | AverageAggregatorsType
+    | CumulativeAggregatorsType
 
   export type HealthStatisticsStepsAggregatorType =
     | GenericAggregatorsType
@@ -941,6 +942,7 @@ declare module 'react-native-health' {
     interval?: HealthStatisticsIntervalType
     startDate?: string
     endDate?: string
+    source?: string
   }
 
   export interface HealthStatisticsStepsInputOptions extends HealthUnitOptions {
@@ -950,7 +952,8 @@ declare module 'react-native-health' {
     endDate?: string
   }
 
-  export interface HealthStatisticsCumulativeInputOptions extends HealthUnitOptions {
+  export interface HealthStatisticsCumulativeInputOptions
+    extends HealthUnitOptions {
     aggregator: CumulativeAggregatorsType
     interval?: HealthStatisticsIntervalType
     startDate: string
@@ -1116,7 +1119,7 @@ declare module 'react-native-health' {
     | 'lactation'
 
   export interface HealthMedianStatisticsInputOptions {
-    types: ((StatisticKey)[] | readonly StatisticKey[]);
+    types: StatisticKey[] | readonly StatisticKey[]
   }
 
   export interface HKWorkoutQueriedSampleType {

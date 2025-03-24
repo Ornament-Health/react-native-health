@@ -10,12 +10,13 @@
 }
 
 - (instancetype)initWithQuantityType:(HKQuantityType *)quantityType
-                            quantity:(HKQuantityTypeIdentifier) quantity
+                            quantity:(HKQuantityTypeIdentifier)quantity
                                 unit:(HKUnit *)unit
                            startDate:(NSDate *)startDate
                              endDate:(NSDate *)endDate
                         intervalType:(RCTInterval)intervalType
-                      aggregatorType:(RCTAggregatorType)aggregatorType {
+                      aggregatorType:(RCTAggregatorType)aggregatorType
+                              source:(NSString *) source {
     self = [super init];
     if (self) {
         self.quantityType = quantityType;
@@ -25,25 +26,28 @@
         self.endDate = endDate;
         self.intervalType = intervalType;
         self.aggregatorType = aggregatorType;
+        self.source = source;
     }
 
     return self;
 }
 
 + (instancetype)requestWithQuantityType:(HKQuantityType *)quantityType
-                               quantity:(HKQuantityTypeIdentifier) quantity
+                               quantity:(HKQuantityTypeIdentifier)quantity
                                    unit:(HKUnit *)unit
                               startDate:(NSDate *)startDate
                                 endDate:(NSDate *)endDate
                            intervalType:(RCTInterval)intervalType
-                         aggregatorType:(RCTAggregatorType)aggregatorType {
+                         aggregatorType:(RCTAggregatorType)aggregatorType
+                                 source:(NSString *) source {
     return [[self alloc] initWithQuantityType:quantityType
                                      quantity: quantity
                                          unit:unit
                                     startDate:startDate
                                       endDate:endDate
                                  intervalType:intervalType
-                               aggregatorType:aggregatorType];
+                               aggregatorType:aggregatorType
+                                       source:source];
 }
 
 - (NSDateComponents *)interval {

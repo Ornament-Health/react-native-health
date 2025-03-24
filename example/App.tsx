@@ -6,6 +6,7 @@ import {
   View,
   Text,
   StatusBar,
+  Button,
 } from 'react-native';
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
@@ -19,7 +20,10 @@ import {NativeEventEmitter, NativeModules} from 'react-native';
 /* Permission options */
 const permissions = {
   permissions: {
-    read: [AppleHealthKit.Constants.Permissions.HeartRate],
+    read: [
+      AppleHealthKit.Constants.Permissions.HeartRate,
+      AppleHealthKit.Constants.Permissions.Fiber,
+    ],
     write: [AppleHealthKit.Constants.Permissions.Steps],
   },
 } as HealthKitPermissions;
@@ -47,6 +51,7 @@ AppleHealthKit.initHealthKit(permissions, (error: string) => {
 
 export default function App() {
   const [authStatus, setAuthStatus] = useState<any>({});
+  const [data, setData] = useState<any>({});
 
   useEffect(() => {
     new NativeEventEmitter(NativeModules.AppleHealthKit).addListener(
@@ -66,6 +71,23 @@ export default function App() {
     });
   };
 
+  const getData = () => {
+    AppleHealthKit.getStatisticDietaryFiber(
+      {
+        aggregator: 3,
+        interval: 0,
+        startDate: new Date(2020, 1, 1).toISOString(),
+        endDate: new Date().toISOString(),
+      },
+      (err, result) => {
+        if (err) {
+          console.error(err);
+        }
+        setData(result);
+      },
+    );
+  };
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -78,11 +100,16 @@ export default function App() {
               <Text style={styles.sectionTitle}>
                 React Native Health Example
               </Text>
-              <Text onPress={handlePressGetAuthStatus}>
-                Press me to get Auth Status
-              </Text>
+              <Button
+                title="Press me to get Auth Status"
+                onPress={handlePressGetAuthStatus}
+              />
               <Text style={styles.sectionDescription}>
                 {JSON.stringify(authStatus, null, 2)}
+              </Text>
+              <Button title="Get data" onPress={getData} />
+              <Text style={styles.sectionDescription}>
+                {JSON.stringify(data, null, 2)}
               </Text>
             </View>
           </View>

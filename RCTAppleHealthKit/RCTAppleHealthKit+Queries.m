@@ -1233,13 +1233,13 @@
 }
 
 - (void)fetchStatisticsCollection:(RCTStatisticRequest *)request
+                       predicate:(NSPredicate * _Nullable)predicate
 					   completion:(void (^)(NSArray *, NSError *))completionHandler {
-	NSPredicate *predicate = [RCTAppleHealthKit predicateForStatisticsBetweenDates:request.startDate endDate:request.endDate];
-
+    
 	// Create the query
 	HKStatisticsCollectionQuery *query = [[HKStatisticsCollectionQuery alloc] initWithQuantityType:request.quantityType
 																		   quantitySamplePredicate:predicate
-																						   options:request.statisticsOptions
+																						   options:request.statisticsOptions | HKStatisticsOptionSeparateBySource
 																						anchorDate:request.startDate
 																				intervalComponents:request.interval];
 
@@ -1266,7 +1266,9 @@
 										   NSMutableDictionary *elem = [[NSMutableDictionary alloc] initWithDictionary:@{
 												   @"value": @(value),
 												   @"startDate": [RCTAppleHealthKit buildStringFromDateForStatistics:result.startDate],
-												   @"endDate": [RCTAppleHealthKit buildStringFromDateForStatistics:result.endDate]
+												   @"endDate": [RCTAppleHealthKit buildStringFromDateForStatistics:result.endDate],
+                                                   @"sources": [RCTAppleHealthKit buildSourcesForStatistics:result.sources]
+                                                   
 										   }];
 										   NSString *json = [RCTAppleHealthKit stringFromObject:elem];
 										   NSString *hash = [RCTAppleHealthKit md5HashString:[request makeStringWithPrefix:json]];
@@ -1389,6 +1391,37 @@
                                                                 resultsHandler:handlerBlock];
 
     [self.healthStore executeQuery:query];
+}
+
+- (void)preparePredicateForStatisticsCollection:(RCTStatisticRequest *)request
+                                       completion:(void (^)(NSPredicate * _Nullable))completionHandler {
+    
+    NSMutableArray *predicates = [NSMutableArray array];
+    
+    NSPredicate *datePredicate = [RCTAppleHealthKit predicateForStatisticsBetweenDates:request.startDate endDate:request.endDate];
+    [predicates addObject:datePredicate];
+    
+    if (request.source != nil) {
+        HKSourceQuery *sourceQuery = [[HKSourceQuery alloc] initWithSampleType:request.quantityType
+                                                               samplePredicate:datePredicate
+                                                             completionHandler:^(HKSourceQuery *query, NSSet<HKSource *> *sources, NSError *error) {
+            if (error) {
+                NSLog(@"*** An error occurred while getting sources: %@ ***", error.localizedDescription);
+            }
+            
+            NSPredicate *bundleIdPredicate = [NSPredicate predicateWithFormat:@"bundleIdentifier == %@", request.source];
+            NSSet *filteredSources = [sources filteredSetUsingPredicate:bundleIdPredicate];
+            NSPredicate *sourcePredicate = [HKQuery predicateForObjectsFromSources:filteredSources];
+            [predicates addObject:sourcePredicate];
+            
+            NSCompoundPredicate *combinedPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
+            completionHandler(combinedPredicate);
+        }];
+        return;
+    }
+    
+    NSCompoundPredicate *combinedPredicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
+    completionHandler(combinedPredicate);
 }
 
 @end

@@ -16,22 +16,25 @@
 @property NSDate *endDate;
 @property RCTInterval intervalType;
 @property RCTAggregatorType aggregatorType;
+@property NSString *source;
 
 - (instancetype)initWithQuantityType:(HKQuantityType *)quantityType
-                            quantity:(HKQuantityTypeIdentifier) quantity
+                            quantity:(HKQuantityTypeIdentifier)quantity
                                 unit:(HKUnit *)unit
                            startDate:(NSDate *)startDate
                              endDate:(NSDate *)endDate
                         intervalType:(RCTInterval)intervalType
-                      aggregatorType:(RCTAggregatorType)aggregatorType;
+                      aggregatorType:(RCTAggregatorType)aggregatorType
+                              source:(NSString *)source;
 
 + (instancetype)requestWithQuantityType:(HKQuantityType *)quantityType
-                               quantity:(HKQuantityTypeIdentifier) quantity
+                               quantity:(HKQuantityTypeIdentifier)quantity
                                    unit:(HKUnit *)unit
                               startDate:(NSDate *)startDate
                                 endDate:(NSDate *)endDate
                            intervalType:(RCTInterval)intervalType
-                         aggregatorType:(RCTAggregatorType)aggregatorType;
+                         aggregatorType:(RCTAggregatorType)aggregatorType
+                                 source:(NSString *)source;
 
 - (NSDateComponents*) interval;
 - (HKStatisticsOptions) statisticsOptions;

@@ -650,7 +650,12 @@
             break;
         }
         default: {
-            [self fetchStatisticsCollection:request completion:callback];
+            [self preparePredicateForStatisticsCollection:request
+                                               completion:^(NSPredicate *predicate) {
+                                                    [self fetchStatisticsCollection:request
+                                                                          predicate:predicate
+                                                                         completion:callback]
+                                                }];
             break;
         }
     }

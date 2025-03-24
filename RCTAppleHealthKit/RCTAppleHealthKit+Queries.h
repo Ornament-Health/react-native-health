@@ -120,6 +120,7 @@
 				  completion:(void (^)(NSArray *, NSError *))completionHandler;
 
 - (void)fetchStatisticsCollection:(RCTStatisticRequest *)request
+                       predicate:(NSPredicate * _Nullable)predicate
 					   completion:(void (^)(NSArray *, NSError *))completionHandler;
 
 - (void)makeIntervalsForStatisticsCollection:(HKQuantityType *)quantityType
@@ -135,10 +136,14 @@
 						   ascending:(BOOL)asc
 							   limit:(NSUInteger)lim
 						  completion:(void (^)(NSArray *, NSError *))completion;
+
 - (void)fetchBatchOfSamples:(HKSampleType *)type
                     predicate:(NSPredicate *)predicate
                        anchor:(HKQueryAnchor *)anchor
                         limit:(NSUInteger)lim
                    completion:(void (^)(NSDictionary *, NSError *))completion;
+
+- (void)preparePredicateForStatisticsCollection:(RCTStatisticRequest *)request
+                                      completion:(void (^)(NSPredicate * _Nullable))completionHandler;
 
 @end

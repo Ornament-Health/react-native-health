@@ -225,14 +225,16 @@ NSString * const kTypesKey = @"types";
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:options key:@"endDate" withDefault:nil];
     RCTInterval intervalType = (RCTInterval) [RCTAppleHealthKit uintFromOptions:options key:@"interval" withDefault:RCTIntervalMonth];
     RCTAggregatorType aggregatorType = (RCTAggregatorType) [RCTAppleHealthKit uintFromOptions:options key:@"aggregator" withDefault:-1];
+    NSString *source = [RCTAppleHealthKit stringFromOptions:options key:@"source" withDefault:nil];
 
     return [RCTStatisticRequest requestWithQuantityType:quantityType
-                                               quantity: quantity
+                                               quantity:quantity
                                                    unit:unit
                                               startDate:startDate
                                                 endDate:endDate
                                            intervalType:intervalType
-                                         aggregatorType:aggregatorType];
+                                         aggregatorType:aggregatorType
+                                                 source:source];
 }
 
 /*!
@@ -769,6 +771,20 @@ NSString * const kTypesKey = @"types";
          sortedArrayUsingDescriptors:sortDescriptors];
 
     return sorted.lastObject;
+}
+
++ (NSArray *) buildSourcesForStatistics:(NSArray<__kindof HKSource *> * _Nullable)input {
+    NSMutableArray *sources = [NSMutableArray array];
+    if (input != nil) {
+        for (HKSource *source in input) {
+            NSDictionary *sourceDict = @{
+                @"name": source.name,
+                @"bundleId": source.bundleIdentifier
+            };
+            [sources addObject:sourceDict];
+        }
+    }
+    return sources;
 }
 
 

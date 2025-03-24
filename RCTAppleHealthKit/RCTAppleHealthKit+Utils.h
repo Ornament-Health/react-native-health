@@ -43,6 +43,7 @@ extern NSString * const kTypesKey;
 + (HKQuantity *)hkQuantityFromOptions:(NSDictionary *)options valueKey: (NSString *)valueKey unitKey: (NSString *)unitKey;
 + (NSDictionary *)metadataFromOptions:(NSDictionary *)options withDefault:(NSDictionary *)defaultValue;
 + (NSArray *)typesFromOptions:(NSDictionary *)options;
++ (HKSource *)sourceFromOptions:(NSDictionary *)options;
 
 + (NSArray *)formatWorkoutEvents:(NSArray *)workoutEvents;
 + (NSMutableArray *)reverseNSMutableArray:(NSMutableArray *)array;
@@ -54,5 +55,6 @@ extern NSString * const kTypesKey;
 + (NSInteger) daysFromSeconds:(NSDate *)startDate endDate: (NSDate *)endDate;
 + (HKSample *) firstByDateFromSamples:(NSArray<__kindof HKSample *>*)input;
 + (HKSample *) lastByDateFromSamples:(NSArray<__kindof HKSample *>*)input;
++ (NSArray *) buildSourcesForStatistics:(NSArray<__kindof HKSource *> * _Nullable)input;
 
 @end
