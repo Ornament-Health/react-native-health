@@ -654,7 +654,7 @@
                                                completion:^(NSPredicate *predicate) {
                                                     [self fetchStatisticsCollection:request
                                                                           predicate:predicate
-                                                                         completion:callback]
+                                                                         completion:callback];
                                                 }];
             break;
         }
