@@ -834,6 +834,7 @@
         response[@"interval"] = interval ? interval : @"";
         response[@"startDate"] = sample.startDate;
         response[@"endDate"] = sample.endDate;
+        response[@"source"] = sample.sourceRevision.source;
 
         [samplesOutput addObject:response];
     }
@@ -855,6 +856,7 @@
         double intervalValue = 0;
         double entriesCount = 0;
         setOfDatesWithEntries = [NSMutableSet new];
+        NSMutableArray<__kindof HKSource *> *sources = [NSMutableArray new];
         for (NSDictionary *intervalValueObj in intervalValues) {
             intervalValue += [intervalValueObj[@"value"] doubleValue];
             entriesCount += 1;
@@ -862,6 +864,7 @@
             [intervalDateFormatter setDateFormat:@"yyyy-MM-dd"];
             NSString *intervalDay = [intervalDateFormatter stringFromDate:intervalValueObj[@"startDate"]];
             [setOfDatesWithEntries addObject:intervalDay];
+            [sources addObject:intervalValueObj[@"source"]];
         }
 
         NSDate *startIntervalDate;
@@ -884,12 +887,10 @@
             endIntervalDate = [calendar dateFromComponents:componentsEndDate];
         }
 
-        NSString *startDateString = [RCTAppleHealthKit buildStringFromDateForStatistics:startIntervalDate];
-        NSString *endDateString = [RCTAppleHealthKit buildStringFromDateForStatistics:endIntervalDate];
-
         NSMutableDictionary *resultForInterval = [NSMutableDictionary new];
-        resultForInterval[@"startDate"] = startDateString;
-        resultForInterval[@"endDate"] = endDateString;
+        resultForInterval[@"startDate"] = [RCTAppleHealthKit buildStringFromDateForStatistics:startIntervalDate];
+        resultForInterval[@"endDate"] = [RCTAppleHealthKit buildStringFromDateForStatistics:endIntervalDate];
+        resultForInterval[@"sources"] = [RCTAppleHealthKit buildSourcesForStatistics:sources];
 
         double averageValue = 0;
         
