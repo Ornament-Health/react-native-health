@@ -650,12 +650,8 @@
             break;
         }
         default: {
-            [self preparePredicateForStatisticsCollection:request
-                                               completion:^(NSPredicate *predicate) {
-                                                    [self fetchStatisticsCollection:request
-                                                                          predicate:predicate
-                                                                         completion:callback];
-                                                }];
+            [self fetchStatisticsCollection:request
+                                 completion:callback];
             break;
         }
     }
@@ -677,7 +673,7 @@
 
                 [self fetchStatisticsSamplesOfType:quantityType
                                               unit:unit
-										  interval:interval
+                                          interval:interval
                                          predicate:predicate
                                          ascending:ascending
                                              limit:1
@@ -737,6 +733,7 @@
 
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+    NSString *source = [RCTAppleHealthKit stringFromOptions:input key:@"source" withDefault:nil];
 
     RCTInterval intervalType = (RCTInterval) [RCTAppleHealthKit uintFromOptions:input key:@"interval" withDefault:RCTIntervalMonth];
 
@@ -768,49 +765,54 @@
     while (hasResults) {
         if (anchorString != nil) {
             NSData* anchorData = [[NSData alloc] initWithBase64EncodedString:anchorString options:0];
-            anchor = [NSKeyedUnarchiver unarchiveObjectWithData:anchorData];
+            anchor = [NSKeyedUnarchiver unarchivedObjectOfClass:[HKQueryAnchor class] fromData:anchorData error:nil];
         }
 
         NSPredicate *anchorPredicate = [RCTAppleHealthKit predicateForAnchoredQueries:anchor startDate:startDate endDate:endDate];
 
         dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
 
-        [self fetchBatchOfSamples:sample
-                        predicate:anchorPredicate
-                           anchor:anchor
-                            limit:limit
-                       completion:^(NSDictionary *results, NSError *error) {
+        [self predicateForSampleType:sample
+                            bySource:source
+                        combinedWith:anchorPredicate
+                          completion:^(NSPredicate *predicate) {
+            [self fetchBatchOfSamples:sample
+                            predicate:predicate
+                               anchor:anchor
+                                limit:limit
+                           completion:^(NSDictionary *results, NSError *error) {
 
-            if (results) {
-                @try {
+                if (results) {
+                    @try {
 
-                    NSMutableArray<__kindof HKSample *> *data = results[@"data"];
+                        NSMutableArray<__kindof HKSample *> *data = results[@"data"];
 
-                    if (data == nil) {
+                        if (data == nil) {
+                            hasResults = NO;
+                            NSLog(@"RNHealth averageDietaryStatisticsRequest: An error occured");
+                            dispatch_semaphore_signal(semaphore);
+                        }
+
+                        if (data.count > 0) {
+                            [samplesResultArray addObjectsFromArray:data];
+
+                            anchorString = results[@"anchor"];
+
+                        } else {
+                            hasResults = NO;
+                        }
+                        dispatch_semaphore_signal(semaphore);
+                    } @catch (NSException *exception) {
                         hasResults = NO;
                         NSLog(@"RNHealth averageDietaryStatisticsRequest: An error occured");
                         dispatch_semaphore_signal(semaphore);
                     }
-
-                    if (data.count > 0) {
-                        [samplesResultArray addObjectsFromArray:data];
-
-                        anchorString = results[@"anchor"];
-
-                    } else {
-                        hasResults = NO;
-                    }
-                    dispatch_semaphore_signal(semaphore);
-                } @catch (NSException *exception) {
+                } else {
                     hasResults = NO;
                     NSLog(@"RNHealth averageDietaryStatisticsRequest: An error occured");
                     dispatch_semaphore_signal(semaphore);
                 }
-            } else {
-                hasResults = NO;
-                NSLog(@"RNHealth averageDietaryStatisticsRequest: An error occured");
-                dispatch_semaphore_signal(semaphore);
-            }
+            }];
         }];
 
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
