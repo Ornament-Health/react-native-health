@@ -1,6 +1,6 @@
 {
   "name": "react-native-health",
-  "version": "1.22.1",
+  "version": "1.22.2",
   "description": "A React Native package to interact with Apple HealthKit",
   "main": "index.js",
   "repository": {

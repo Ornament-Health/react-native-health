@@ -55,6 +55,6 @@ extern NSString * const kTypesKey;
 + (NSInteger) daysFromSeconds:(NSDate *)startDate endDate: (NSDate *)endDate;
 + (HKSample *) firstByDateFromSamples:(NSArray<__kindof HKSample *>*)input;
 + (HKSample *) lastByDateFromSamples:(NSArray<__kindof HKSample *>*)input;
-+ (NSArray *) buildSourcesForStatistics:(NSArray<__kindof HKSource *> * _Nullable)input;
++ (NSArray * _Nonnull) buildSourcesForStatistics:(NSArray<__kindof HKSource *> * _Nullable)input;
 
 @end

@@ -238,9 +238,9 @@ NSString * const kTypesKey = @"types";
 }
 
 /*!
-	Convert Human Readable name for a HealthKit activity into a HKObjectType format
+    Convert Human Readable name for a HealthKit activity into a HKObjectType format
 
-	@param type The human readable format
+    @param type The human readable format
  */
 + (HKSampleType *)quantityTypeFromName:(NSString *)type {
     if ([type isEqual:@"ActiveEnergyBurned"]){
@@ -786,6 +786,5 @@ NSString * const kTypesKey = @"types";
     }
     return sources;
 }
-
 
 @end
