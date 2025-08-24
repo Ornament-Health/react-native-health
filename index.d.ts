@@ -958,6 +958,7 @@ declare module 'react-native-health' {
     interval?: HealthStatisticsIntervalType
     startDate: string
     endDate: string
+    source?: string
   }
 
   export type StatisticKey =
@@ -1120,6 +1121,7 @@ declare module 'react-native-health' {
 
   export interface HealthMedianStatisticsInputOptions {
     types: StatisticKey[] | readonly StatisticKey[]
+    source?: string
   }
 
   export interface HKWorkoutQueriedSampleType {

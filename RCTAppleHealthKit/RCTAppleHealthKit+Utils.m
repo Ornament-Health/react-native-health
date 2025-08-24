@@ -775,13 +775,17 @@ NSString * const kTypesKey = @"types";
 
 + (NSArray *) buildSourcesForStatistics:(NSArray<__kindof HKSource *> * _Nullable)input {
     NSMutableArray *sources = [NSMutableArray array];
+    NSMutableSet *seenBundleIds = [NSMutableSet set];
     if (input != nil) {
         for (HKSource *source in input) {
-            NSDictionary *sourceDict = @{
-                @"name": source.name,
-                @"bundleId": source.bundleIdentifier
-            };
-            [sources addObject:sourceDict];
+            if (![seenBundleIds containsObject:source.bundleIdentifier]) {
+                NSDictionary *sourceDict = @{
+                    @"name": source.name,
+                    @"bundleId": source.bundleIdentifier
+                };
+                [sources addObject:sourceDict];
+                [seenBundleIds addObject:source.bundleIdentifier];
+            }
         }
     }
     return sources;
