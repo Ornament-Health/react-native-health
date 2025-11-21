@@ -1133,6 +1133,7 @@ declare module 'react-native-health' {
     sourceName: string
     sourceId: string
     distance: number
+    duration: number
     start: string
     end: string
   }

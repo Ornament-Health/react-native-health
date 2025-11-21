@@ -514,7 +514,8 @@
                     @try {
                         double energy = [[sample totalEnergyBurned] doubleValueForUnit:[HKUnit kilocalorieUnit]];
                         double distance = [[sample totalDistance] doubleValueForUnit:[HKUnit mileUnit]];
-                        NSString *type = [RCTAppleHealthKit stringForHKWorkoutActivityType:[sample workoutActivityType]];
+                        double duration = [sample duration];
+                        NSString *type = [RCTAppleHealthKit stringForHKWorkoutActivityType:(int)[sample workoutActivityType]];
 
                         NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate];
                         NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate];
@@ -535,7 +536,7 @@
                         }
 
                         NSDictionary *elem = @{
-                                @"activityId": [NSNumber numberWithInt:[sample workoutActivityType]],
+                                @"activityId": [NSNumber numberWithInt:(int)[sample workoutActivityType]],
                                 @"id": [[sample UUID] UUIDString],
                                 @"activityName": type,
                                 @"calories": @(energy),
@@ -545,6 +546,7 @@
                                 @"sourceId": [[[sample sourceRevision] source] bundleIdentifier],
                                 @"device": device,
                                 @"distance": @(distance),
+                                @"duration": @(duration),
                                 @"start": startDateString,
                                 @"end": endDateString
                         };
@@ -908,16 +910,15 @@
                                                      fromDate:startDate];
     //anchorComponents.hour = 0;
     NSDate *anchorDate = [calendar dateFromComponents:anchorComponents];
-    NSPredicate *predicate = nil;
-    if (includeManuallyAdded == false) {
-        predicate = [NSPredicate predicateWithFormat:@"metadata.%K != YES AND %K >= %@ AND %K <= %@",
-                                                     HKMetadataKeyWasUserEntered,
-                                                     HKPredicateKeyPathEndDate, endDate,
-                                                     HKPredicateKeyPathStartDate, startDate];
-    } else {
-        predicate = [NSPredicate predicateWithFormat:@"%K >= %@ AND %K <= %@",
-                                                     HKPredicateKeyPathEndDate, endDate,
-                                                     HKPredicateKeyPathStartDate, startDate];
+    NSPredicate *predicate = [HKQuery predicateForSamplesWithStartDate:startDate
+                                                               endDate:endDate
+                                                               options:HKQueryOptionStrictEndDate];
+    if (!includeManuallyAdded) {
+        NSArray<NSPredicate *> *predicates = @[
+            predicate,
+            [NSCompoundPredicate notPredicateWithSubpredicate:[HKQuery predicateForObjectsWithMetadataKey:HKMetadataKeyWasUserEntered]]
+        ];
+        predicate = [NSCompoundPredicate andPredicateWithSubpredicates:predicates];
     }
     // Create the query
     HKStatisticsCollectionQuery *query = [[HKStatisticsCollectionQuery alloc] initWithQuantityType:quantityType
@@ -1143,50 +1144,51 @@
                      endDate:(NSDate *)endDate
                   completion:(void (^)(NSArray *, NSError *))completionHandler {
     NSCalendar *calendar = [NSCalendar currentCalendar];
-    NSDateComponents *startComponent = [calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitEra
-                                                   fromDate:startDate];
+    NSDateComponents *startComponent = [calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitEra fromDate:startDate];
     startComponent.calendar = calendar;
-    NSDateComponents *endComponent = [calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitEra
-                                                 fromDate:endDate];
+    NSDateComponents *endComponent = [calendar components:NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear | NSCalendarUnitEra fromDate:endDate];
     endComponent.calendar = calendar;
     NSPredicate *predicate = [HKQuery predicateForActivitySummariesBetweenStartDateComponents:startComponent endDateComponents:endComponent];
+    
+    void (^handlerBlock)(HKActivitySummaryQuery *query, NSArray *results, NSError *error);
+    handlerBlock = ^(HKActivitySummaryQuery *query, NSArray *results, NSError *error) {
+        
+        if (error) {
+            // Perform proper error handling here
+            NSLog(@"*** An error occurred while fetching the summary: %@ ***", error.localizedDescription);
+            completionHandler(nil, error);
+            return;
+        }
+
+        NSMutableArray *data = [NSMutableArray arrayWithCapacity:1];
+
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            for (HKActivitySummary *summary in results) {
+                int aebVal = [summary.activeEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]];
+                int aebgVal = [summary.activeEnergyBurnedGoal doubleValueForUnit:[HKUnit kilocalorieUnit]];
+                int aetVal = [summary.appleExerciseTime doubleValueForUnit:[HKUnit minuteUnit]];
+                int aetgVal = [summary.appleExerciseTimeGoal doubleValueForUnit:[HKUnit minuteUnit]];
+                int ashVal = [summary.appleStandHours doubleValueForUnit:[HKUnit countUnit]];
+                int ashgVal = [summary.appleStandHoursGoal doubleValueForUnit:[HKUnit countUnit]];
+
+                NSDictionary *elem = @{
+                        @"activeEnergyBurned": @(aebVal),
+                        @"activeEnergyBurnedGoal": @(aebgVal),
+                        @"appleExerciseTime": @(aetVal),
+                        @"appleExerciseTimeGoal": @(aetgVal),
+                        @"appleStandHours": @(ashVal),
+                        @"appleStandHoursGoal": @(ashgVal),
+                };
+
+                [data addObject:elem];
+            }
+
+            completionHandler(data, error);
+        });
+    };
 
     HKActivitySummaryQuery *query = [[HKActivitySummaryQuery alloc] initWithPredicate:predicate
-                                                                       resultsHandler:^(HKActivitySummaryQuery *query, NSArray *results, NSError *error) {
-
-                                                                           if (error) {
-                                                                               // Perform proper error handling here
-                                                                               NSLog(@"*** An error occurred while fetching the summary: %@ ***", error.localizedDescription);
-                                                                               completionHandler(nil, error);
-                                                                               return;
-                                                                           }
-
-                                                                           NSMutableArray *data = [NSMutableArray arrayWithCapacity:1];
-
-                                                                           dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-                                                                               for (HKActivitySummary *summary in results) {
-                                                                                   int aebVal = [summary.activeEnergyBurned doubleValueForUnit:[HKUnit kilocalorieUnit]];
-                                                                                   int aebgVal = [summary.activeEnergyBurnedGoal doubleValueForUnit:[HKUnit kilocalorieUnit]];
-                                                                                   int aetVal = [summary.appleExerciseTime doubleValueForUnit:[HKUnit minuteUnit]];
-                                                                                   int aetgVal = [summary.appleExerciseTimeGoal doubleValueForUnit:[HKUnit minuteUnit]];
-                                                                                   int ashVal = [summary.appleStandHours doubleValueForUnit:[HKUnit countUnit]];
-                                                                                   int ashgVal = [summary.appleStandHoursGoal doubleValueForUnit:[HKUnit countUnit]];
-
-                                                                                   NSDictionary *elem = @{
-                                                                                           @"activeEnergyBurned": @(aebVal),
-                                                                                           @"activeEnergyBurnedGoal": @(aebgVal),
-                                                                                           @"appleExerciseTime": @(aetVal),
-                                                                                           @"appleExerciseTimeGoal": @(aetgVal),
-                                                                                           @"appleStandHours": @(ashVal),
-                                                                                           @"appleStandHoursGoal": @(ashgVal),
-                                                                                   };
-
-                                                                                   [data addObject:elem];
-                                                                               }
-
-                                                                               completionHandler(data, error);
-                                                                           });
-                                                                       }];
+                                                                       resultsHandler:handlerBlock];
 
     [self.healthStore executeQuery:query];
 
