@@ -390,6 +390,12 @@ RCT_EXPORT_METHOD(getRestingHeartRate:(NSDictionary *)input callback:(RCTRespons
     [self vitals_getRestingHeartRate:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(saveRestingHeartRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self vitals_saveRestingHeartRate:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getWalkingHeartRateAverage:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];

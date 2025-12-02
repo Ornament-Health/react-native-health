@@ -36,7 +36,15 @@
             callback(@[RCTMakeError(@"An error occured saving the heart rate sample", error, nil)]);
             return;
         }
-        callback(@[[NSNull null], @true]);
+
+        NSDictionary *result = @{
+            @"id" : [heartRate.UUID UUIDString],
+            @"value" : @(heartRateValue),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:heartRate.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:heartRate.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
     }];
 }
 
@@ -109,6 +117,42 @@
                                   return;
                               }
                           }];
+}
+
+- (void)vitals_saveRestingHeartRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:0];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:startDate];
+
+    if (value <= 0) {
+        callback(@[RCTMakeError(@"value is required and must be greater than 0", nil, nil)]);
+        return;
+    }
+
+    HKUnit *unit = [[HKUnit countUnit] unitDividedByUnit:[HKUnit minuteUnit]];
+    HKQuantity *quantity = [HKQuantity quantityWithUnit:unit doubleValue:value];
+    
+    HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierRestingHeartRate];
+
+    HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type quantity:quantity startDate:startDate endDate:endDate];
+
+    [self.healthStore saveObject:sample withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"error saving resting heart rate: %@", error);
+            callback(@[RCTJSErrorFromNSError(error)]);
+            return;
+        }
+        
+        NSDictionary *result = @{
+            @"id" : [sample.UUID UUIDString],
+            @"value" : @(value),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
+    }];
 }
 
 - (void)vitals_getWalkingHeartRateAverage:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
@@ -527,7 +571,15 @@
             callback(@[RCTMakeError(@"error saving oxygen saturation sample", error, nil)]);
             return;
         }
-        callback(@[[NSNull null], @(value)]);
+
+        NSDictionary *result = @{
+            @"id" : [sample.UUID UUIDString],
+            @"value" : @(value),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
     }];
 }
 
