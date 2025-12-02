@@ -8,6 +8,7 @@
 
 #import "RCTAppleHealthKit.h"
 #import "RCTAppleHealthKit+TypesAndPermissions.h"
+#import "RCTAppleHealthKit+Utils.h"
 
 #import "RCTAppleHealthKit+Methods_Activity.h"
 #import "RCTAppleHealthKit+Methods_Body.h"
@@ -470,7 +471,7 @@ RCT_EXPORT_METHOD(getOxygenSaturationSamples:(NSDictionary *)input callback:(RCT
 RCT_EXPORT_METHOD(saveOxygenSaturation:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self vital_saveOxygenSaturation:input callback:callback];
+    [self vitals_saveOxygenSaturation:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getElectrocardiogramSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
