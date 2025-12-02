@@ -504,6 +504,33 @@
     }];
 }
 
+- (void)vitals_saveOxygenSaturation:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:0];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+
+    double valueForHK = value / 100.0;
+
+    HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierOxygenSaturation];
+    HKUnit *unit = [HKUnit percentUnit];
+    HKQuantity *quantity = [HKQuantity quantityWithUnit:unit doubleValue:valueForHK];
+
+    HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type
+                                                               quantity:quantity
+                                                              startDate:startDate
+                                                                endDate:endDate];
+
+    [self.healthStore saveObject:sample withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"error saving oxygen saturation sample: %@", error);
+            callback(@[RCTMakeError(@"error saving oxygen saturation sample", error, nil)]);
+            return;
+        }
+        callback(@[[NSNull null], @(value)]);
+    }];
+}
+
 - (void)vitals_getElectrocardiogramSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
  {
      if (@available(iOS 14.0, *)) {
