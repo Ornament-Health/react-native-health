@@ -15,6 +15,8 @@
         callback(@[RCTMakeError(@"RNHealth: No data types provided", nil, nil)]);
         return;
     }
+    
+    NSString *source = [RCTAppleHealthKit stringFromOptions:input key:@"source" withDefault:nil];
 
     NSDate *startDate = [NSDate dateWithTimeIntervalSince1970:0];
     NSDate *endDate = [NSDate date];
@@ -68,68 +70,74 @@
                     anchor = [NSKeyedUnarchiver unarchiveObjectWithData:anchorData];
                 }
 
-                NSPredicate *predicate = [RCTAppleHealthKit predicateForAnchoredQueries:anchor startDate:startDate endDate:endDate];
+                NSPredicate *anchorPredicate = [RCTAppleHealthKit predicateForAnchoredQueries:anchor startDate:startDate endDate:endDate];
 
                 dispatch_semaphore_t semaphore = dispatch_semaphore_create(0);
+                
+                [self predicateForSampleType:sample
+                                    bySource:source
+                                combinedWith:anchorPredicate
+                                  completion:^(NSPredicate *predicate) {
+                    
+                    [self fetchBatchOfSamples:sample
+                                    predicate:predicate
+                                       anchor:anchor
+                                        limit:limit
+                                   completion:^(NSDictionary *results, NSError *error) {
 
-                [self fetchBatchOfSamples:sample
-                                predicate:predicate
-                                   anchor:anchor
-                                    limit:limit
-                               completion:^(NSDictionary *results, NSError *error) {
+                        if (results) {
+                            @try {
 
-                    if (results) {
-                        @try {
+                                NSMutableArray<__kindof HKSample *> *data = results[@"data"];
 
-                            NSMutableArray<__kindof HKSample *> *data = results[@"data"];
+                                if (data == nil) {
+                                    hasResults = NO;
+                                    NSLog(@"RNHealth getMedianStatistic: An error occured");
+                                    dispatch_semaphore_signal(semaphore);
+                                }
 
-                            if (data == nil) {
+                                if (([sample isKindOfClass:[HKWorkoutType class]]) && (![@"workout" isEqual:sampleName])) {
+                                    NSMutableArray<__kindof HKSample *> *dataByActivityType = [NSMutableArray new];
+
+                                    for(HKWorkout *sampleElement in data) {
+                                        NSString *type = [RCTAppleHealthKit stringForHKWorkoutActivityType:[sampleElement workoutActivityType]];
+                                        
+                                        if ([type caseInsensitiveCompare:sampleName] == NSOrderedSame) {
+                                            [dataByActivityType addObject:sampleElement];
+                                        }
+                                    }
+
+                                    data = dataByActivityType;
+                                }
+
+                                if (data.count > 0) {
+                                    [resultArray addObjectsFromArray:data];
+
+                                    //re-assign anchor
+                                    anchorString = results[@"anchor"];
+
+                                    // find very first and last, and save them
+                                    HKSample *firstFromFetched = [RCTAppleHealthKit firstByDateFromSamples:data];
+                                    [samplesFirstByDate addObject:firstFromFetched];
+
+                                    HKSample *lastFromFetched = [RCTAppleHealthKit lastByDateFromSamples:data];
+                                    [samplesLastByDate addObject:lastFromFetched];
+
+                                } else {
+                                    hasResults = NO;
+                                }
+                                dispatch_semaphore_signal(semaphore);
+                            } @catch (NSException *exception) {
                                 hasResults = NO;
                                 NSLog(@"RNHealth getMedianStatistic: An error occured");
                                 dispatch_semaphore_signal(semaphore);
                             }
-
-                            if (([sample isKindOfClass:[HKWorkoutType class]]) && (![@"workout" isEqual:sampleName])) {
-                                NSMutableArray<__kindof HKSample *> *dataByActivityType = [NSMutableArray new];
-
-                                for(HKWorkout *sampleElement in data) {
-                                    NSString *type = [RCTAppleHealthKit stringForHKWorkoutActivityType:[sampleElement workoutActivityType]];
-                                    
-                                    if ([type caseInsensitiveCompare:sampleName] == NSOrderedSame) {
-                                        [dataByActivityType addObject:sampleElement];
-                                    }
-                                }
-
-                                data = dataByActivityType;
-                            }
-
-                            if (data.count > 0) {
-                                [resultArray addObjectsFromArray:data];
-
-                                //re-assign anchor
-                                anchorString = results[@"anchor"];
-
-                                // find very first and last, and save them
-                                HKSample *firstFromFetched = [RCTAppleHealthKit firstByDateFromSamples:data];
-                                [samplesFirstByDate addObject:firstFromFetched];
-
-                                HKSample *lastFromFetched = [RCTAppleHealthKit lastByDateFromSamples:data];
-                                [samplesLastByDate addObject:lastFromFetched];
-
-                            } else {
-                                hasResults = NO;
-                            }
-                            dispatch_semaphore_signal(semaphore);
-                        } @catch (NSException *exception) {
+                        } else {
                             hasResults = NO;
-                            NSLog(@"RNHealth getMedianStatistic: An error occured");
+                            NSLog(@"RNHealthgetMedianStatistic: An error occured");
                             dispatch_semaphore_signal(semaphore);
                         }
-                    } else {
-                        hasResults = NO;
-                        NSLog(@"RNHealthgetMedianStatistic: An error occured");
-                        dispatch_semaphore_signal(semaphore);
-                    }
+                    }];
                 }];
 
                 dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
@@ -168,6 +176,11 @@
 
                 NSString *resultStartDateString = [RCTAppleHealthKit buildISO8601StringFromDate:firstSample.startDate];
                 NSString *resultEndDateString = [RCTAppleHealthKit buildISO8601StringFromDate:lastSample.endDate];
+                
+                NSMutableArray *sources = [NSMutableArray new];
+                for (HKSample *sample in resultArray) {
+                    [sources addObject:sample.sourceRevision.source];
+                }
 
                 NSMutableDictionary *response = [NSMutableDictionary dictionary];
                 response[@"parameterName"] = sampleName ? sampleName : @"";
@@ -176,6 +189,7 @@
                 response[@"entryCount"] = @(resultArray.count);
                 response[@"medianSeconds"] = medianIntervalInSeconds ? medianIntervalInSeconds : [NSNull null];
                 response[@"medianDays"] = medianIntervalInDays ? medianIntervalInDays : [NSNull null];
+                response[@"sources"] = [RCTAppleHealthKit buildSourcesForStatistics:(sources)];
 
                 [output addObject:response];
             }
