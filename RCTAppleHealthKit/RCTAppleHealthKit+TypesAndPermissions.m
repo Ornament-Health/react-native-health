@@ -489,7 +489,14 @@
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierOxygenSaturation];
     } else if ([@"RestingHeartRate" isEqualToString:key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierRestingHeartRate];
+    } else if ([@"BloodPressure" isEqualToString:key]) {
+        return [HKObjectType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+    } else if ([@"BloodPressureSystolic" isEqualToString:key]) {
+        return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    } else if ([@"BloodPressureDiastolic" isEqualToString:key]) {
+        return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
     }
+    
 
     // Fitness Identifiers
     if ([@"Steps" isEqualToString:key]) {
