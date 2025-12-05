@@ -776,6 +776,7 @@
                             bySource:source
                         combinedWith:anchorPredicate
                           completion:^(NSPredicate *predicate) {
+            
             [self fetchBatchOfSamples:sample
                             predicate:predicate
                                anchor:anchor
