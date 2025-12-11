@@ -166,7 +166,15 @@
             callback(@[RCTMakeError(@"An error occured while saving the glucose sample", error, nil)]);
             return;
         }
-        callback(@[[NSNull null], [glucoseSample.UUID UUIDString]]);
+                
+        NSDictionary *result = @{
+            @"id" : [glucoseSample.UUID UUIDString],
+            @"value" : @(value),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:glucoseSample.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:glucoseSample.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
     }];
 }
 
@@ -192,15 +200,7 @@
             callback(@[RCTMakeError(@"An error occured while saving the carbohydrate sample", error, nil)]);
             return;
         }
-        
-        NSDictionary *result = @{
-            @"id" : [glucoseSample.UUID UUIDString],
-            @"value" : @(value),
-            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:glucoseSample.startDate],
-            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:glucoseSample.endDate]
-        };
-        
-        callback(@[[NSNull null], result]);
+        callback(@[[NSNull null], [carbSample.UUID UUIDString]]);
     }];
 }
 
