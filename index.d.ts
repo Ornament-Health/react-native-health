@@ -240,6 +240,11 @@ declare module 'react-native-health' {
       callback: (error: string, result: HealthValue) => void,
     ): void
 
+    saveRestingHeartRateSample(
+      options: HealthValueOptions,
+      callback: (error: string, result: HealthValue) => void,
+    ): void
+
     getWaterSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
@@ -293,6 +298,14 @@ declare module 'react-native-health' {
     getBloodPressureSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<BloodPressureSampleValue>) => void,
+    ): void
+
+    saveBloodPressureSample(
+      options: HealthValueOptions & {
+        bloodPressureSystolicValue: number
+        bloodPressureDiastolicValue: number
+      },
+      callback: (error: string, result: HealthValue) => void,
     ): void
 
     getRespiratoryRateSamples(
@@ -413,6 +426,11 @@ declare module 'react-native-health' {
     getOxygenSaturationSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    saveOxygenSaturationSample(
+      options: HealthValueOptions,
+      callback: (error: string, result: HealthValue) => void,
     ): void
 
     getElectrocardiogramSamples(
@@ -796,6 +814,11 @@ declare module 'react-native-health' {
         err: string,
         results: Array<HealthStatisticsMedianValue>,
       ) => void,
+    ): void
+
+    deleteSampleById(
+      options: { type: string; id: string },
+      callback: (error: string, result: number) => void,
     ): void
 
     Constants: Constants
