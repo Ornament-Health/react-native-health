@@ -841,6 +841,7 @@ declare module 'react-native-health' {
     lastEntry: string
     medianDays: number
     entryCount: number
+    sources: { name: string, bundleId: string }[]
   }
 
   export interface SleepValue extends BaseValue {
