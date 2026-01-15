@@ -8,6 +8,7 @@
 
 #import "RCTAppleHealthKit.h"
 #import "RCTAppleHealthKit+TypesAndPermissions.h"
+#import "RCTAppleHealthKit+Utils.h"
 
 #import "RCTAppleHealthKit+Methods_Activity.h"
 #import "RCTAppleHealthKit+Methods_Body.h"
@@ -389,6 +390,12 @@ RCT_EXPORT_METHOD(getRestingHeartRate:(NSDictionary *)input callback:(RCTRespons
     [self vitals_getRestingHeartRate:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(saveRestingHeartRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self vitals_saveRestingHeartRate:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getWalkingHeartRateAverage:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
@@ -437,6 +444,12 @@ RCT_EXPORT_METHOD(getBloodPressureSamples:(NSDictionary *)input callback:(RCTRes
     [self vitals_getBloodPressureSamples:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(saveBloodPressure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self vitals_saveBloodPressure:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getRespiratoryRateSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
@@ -465,6 +478,12 @@ RCT_EXPORT_METHOD(getOxygenSaturationSamples:(NSDictionary *)input callback:(RCT
 {
     [self _initializeHealthStore];
     [self vitals_getOxygenSaturationSamples:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(saveOxygenSaturation:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self vitals_saveOxygenSaturationSample:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getElectrocardiogramSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -1225,6 +1244,43 @@ RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponse
 -(void)stopObserving {
     self.hasListeners = NO;
     [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+RCT_EXPORT_METHOD(deleteSampleById:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    NSString *typeString = [RCTAppleHealthKit stringFromOptions:input key:@"type" withDefault:@""];
+    NSString *idString = [RCTAppleHealthKit stringFromOptions:input key:@"id" withDefault:@""];
+
+    if ([idString isEqualToString:@""]) {
+        callback(@[RCTMakeError(@"id is required", nil, nil)]);
+        return;
+    }
+
+    HKObjectType *objectType = [self getWritePermFromText:typeString];
+
+    if (!objectType) {
+        callback(@[RCTMakeError(@"Invalid or unknown type", nil, nil)]);
+        return;
+    }
+
+    NSUUID *uuid = [[NSUUID alloc] initWithUUIDString:idString];
+    if (!uuid) {
+         callback(@[RCTMakeError(@"Invalid UUID format", nil, nil)]);
+         return;
+    }
+    
+    NSPredicate *uuidPredicate = [HKQuery predicateForObjectWithUUID:uuid];
+
+    [self _initializeHealthStore];
+
+    [self.healthStore deleteObjectsOfType:objectType predicate:uuidPredicate withCompletion:^(BOOL success, NSUInteger deletedObjectCount, NSError * _Nullable error) {
+        if (!success) {
+            NSLog(@"Error deleting sample: %@", error);
+            callback(@[RCTMakeError(@"Error deleting sample", error, nil)]);
+            return;
+        }
+        callback(@[[NSNull null], @(deletedObjectCount)]);
+    }];
 }
 
 @end

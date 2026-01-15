@@ -36,7 +36,15 @@
             callback(@[RCTMakeError(@"An error occured saving the heart rate sample", error, nil)]);
             return;
         }
-        callback(@[[NSNull null], @true]);
+
+        NSDictionary *result = @{
+            @"id" : [heartRate.UUID UUIDString],
+            @"value" : @(heartRateValue),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:heartRate.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:heartRate.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
     }];
 }
 
@@ -109,6 +117,42 @@
                                   return;
                               }
                           }];
+}
+
+- (void)vitals_saveRestingHeartRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:0];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:startDate];
+
+    if (value <= 0) {
+        callback(@[RCTMakeError(@"value is required and must be greater than 0", nil, nil)]);
+        return;
+    }
+
+    HKUnit *unit = [[HKUnit countUnit] unitDividedByUnit:[HKUnit minuteUnit]];
+    HKQuantity *quantity = [HKQuantity quantityWithUnit:unit doubleValue:value];
+    
+    HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierRestingHeartRate];
+
+    HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type quantity:quantity startDate:startDate endDate:endDate];
+
+    [self.healthStore saveObject:sample withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"error saving resting heart rate: %@", error);
+            callback(@[RCTJSErrorFromNSError(error)]);
+            return;
+        }
+        
+        NSDictionary *result = @{
+            @"id" : [sample.UUID UUIDString],
+            @"value" : @(value),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
+    }];
 }
 
 - (void)vitals_getWalkingHeartRateAverage:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
@@ -504,6 +548,41 @@
     }];
 }
 
+- (void)vitals_saveOxygenSaturationSample:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:0];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+
+    double valueForHK = value / 100.0;
+
+    HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierOxygenSaturation];
+    HKUnit *unit = [HKUnit percentUnit];
+    HKQuantity *quantity = [HKQuantity quantityWithUnit:unit doubleValue:valueForHK];
+
+    HKQuantitySample *sample = [HKQuantitySample quantitySampleWithType:type
+                                                               quantity:quantity
+                                                              startDate:startDate
+                                                                endDate:endDate];
+
+    [self.healthStore saveObject:sample withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"error saving oxygen saturation sample: %@", error);
+            callback(@[RCTMakeError(@"error saving oxygen saturation sample", error, nil)]);
+            return;
+        }
+
+        NSDictionary *result = @{
+            @"id" : [sample.UUID UUIDString],
+            @"value" : @(value),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:sample.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
+    }];
+}
+
 - (void)vitals_getElectrocardiogramSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
  {
      if (@available(iOS 14.0, *)) {
@@ -641,5 +720,70 @@
          callback(@[RCTMakeError(@"Electrocardiogram is not available for this iOS version", nil, nil)]);
      }
  }
+
+ - (void)vitals_saveBloodPressure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    double systolic = [RCTAppleHealthKit doubleFromOptions:input key:@"systolic" withDefault:-1];
+    double diastolic = [RCTAppleHealthKit doubleFromOptions:input key:@"diastolic" withDefault:-1];
+    
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:startDate];
+    
+    NSDictionary *metadata = [RCTAppleHealthKit metadataFromOptions:input withDefault:nil];
+
+    if (systolic < 0 || diastolic < 0) {
+        callback(@[RCTMakeError(@"systolic and diastolic values are required", nil, nil)]);
+        return;
+    }
+    
+    HKUnit *unit = [HKUnit millimeterOfMercuryUnit];
+
+    HKQuantity *systolicQty = [HKQuantity quantityWithUnit:unit doubleValue:systolic];
+    HKQuantityType *systolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+    HKQuantitySample *systolicSample = [HKQuantitySample quantitySampleWithType:systolicType
+                                                                       quantity:systolicQty
+                                                                      startDate:startDate
+                                                                        endDate:endDate
+                                                                       metadata:metadata];
+
+    HKQuantity *diastolicQty = [HKQuantity quantityWithUnit:unit doubleValue:diastolic];
+    HKQuantityType *diastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+    HKQuantitySample *diastolicSample = [HKQuantitySample quantitySampleWithType:diastolicType
+                                                                        quantity:diastolicQty
+                                                                       startDate:startDate
+                                                                         endDate:endDate
+                                                                        metadata:metadata];
+
+    NSSet *objects = [NSSet setWithObjects:systolicSample, diastolicSample, nil];
+
+    HKCorrelationType *correlationType = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+    HKCorrelation *correlation = [HKCorrelation correlationWithType:correlationType
+                                                          startDate:startDate
+                                                            endDate:endDate
+                                                            objects:objects
+                                                           metadata:metadata];
+
+    [self.healthStore saveObject:correlation withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            NSLog(@"error saving blood pressure: %@", error);
+            callback(@[RCTJSErrorFromNSError(error)]);
+            return;
+        }
+        
+        NSMutableDictionary *result = [NSMutableDictionary dictionary];
+        result[@"id"] = [correlation.UUID UUIDString];
+        result[@"systolic"] = @(systolic);
+        result[@"diastolic"] = @(diastolic);
+        result[@"unit"] = [unit unitString];
+        result[@"startDate"] = [RCTAppleHealthKit buildISO8601StringFromDate:correlation.startDate];
+        result[@"endDate"] = [RCTAppleHealthKit buildISO8601StringFromDate:correlation.endDate];
+        
+        if (correlation.metadata) {
+            result[@"metadata"] = correlation.metadata;
+        }
+        
+        callback(@[[NSNull null], result]);
+    }];
+}
 
 @end
