@@ -155,7 +155,7 @@
     }];
 }
 
-- (void)vitals_saveOxygenSaturationSample:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+- (void)vitals_saveOxygenSaturation:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:0];
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
