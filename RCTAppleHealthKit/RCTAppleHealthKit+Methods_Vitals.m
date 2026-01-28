@@ -190,69 +190,91 @@
     }];
 }
 
- - (void)vitals_saveBloodPressure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
-{
-    double systolic = [RCTAppleHealthKit doubleFromOptions:input key:@"systolic" withDefault:-1];
-    double diastolic = [RCTAppleHealthKit doubleFromOptions:input key:@"diastolic" withDefault:-1];
-    
-    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
-    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:startDate];
-    
-    NSDictionary *metadata = [RCTAppleHealthKit metadataFromOptions:input withDefault:nil];
+- (void)vitals_saveBloodPressure:(NSDictionary *)input
+                        callback:(RCTResponseSenderBlock)callback {
+  double systolic = [RCTAppleHealthKit doubleFromOptions:input
+                                                     key:@"systolic"
+                                             withDefault:-1];
+  double diastolic = [RCTAppleHealthKit doubleFromOptions:input
+                                                      key:@"diastolic"
+                                              withDefault:-1];
 
-    if (systolic < 0 || diastolic < 0) {
-        callback(@[RCTMakeError(@"systolic and diastolic values are required", nil, nil)]);
-        return;
-    }
-    
-    HKUnit *unit = [HKUnit millimeterOfMercuryUnit];
+  NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input
+                                                     key:@"startDate"
+                                             withDefault:[NSDate date]];
+  NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input
+                                                   key:@"endDate"
+                                           withDefault:startDate];
 
-    HKQuantity *systolicQty = [HKQuantity quantityWithUnit:unit doubleValue:systolic];
-    HKQuantityType *systolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
-    HKQuantitySample *systolicSample = [HKQuantitySample quantitySampleWithType:systolicType
-                                                                       quantity:systolicQty
-                                                                      startDate:startDate
-                                                                        endDate:endDate
-                                                                       metadata:metadata];
+  NSDictionary *metadata = [RCTAppleHealthKit metadataFromOptions:input
+                                                      withDefault:nil];
 
-    HKQuantity *diastolicQty = [HKQuantity quantityWithUnit:unit doubleValue:diastolic];
-    HKQuantityType *diastolicType = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
-    HKQuantitySample *diastolicSample = [HKQuantitySample quantitySampleWithType:diastolicType
-                                                                        quantity:diastolicQty
-                                                                       startDate:startDate
-                                                                         endDate:endDate
-                                                                        metadata:metadata];
+  if (systolic < 0 || diastolic < 0) {
+    callback(@[ RCTMakeError(@"systolic and diastolic values are required", nil,
+                             nil) ]);
+    return;
+  }
 
-    NSSet *objects = [NSSet setWithObjects:systolicSample, diastolicSample, nil];
+  HKUnit *unit = [HKUnit millimeterOfMercuryUnit];
 
-    HKCorrelationType *correlationType = [HKCorrelationType correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
-    HKCorrelation *correlation = [HKCorrelation correlationWithType:correlationType
-                                                          startDate:startDate
-                                                            endDate:endDate
-                                                            objects:objects
-                                                           metadata:metadata];
+  HKQuantity *systolicQty = [HKQuantity quantityWithUnit:unit
+                                             doubleValue:systolic];
+  HKQuantityType *systolicType = [HKQuantityType
+      quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureSystolic];
+  HKQuantitySample *systolicSample =
+      [HKQuantitySample quantitySampleWithType:systolicType
+                                      quantity:systolicQty
+                                     startDate:startDate
+                                       endDate:endDate
+                                      metadata:metadata];
 
-    [self.healthStore saveObject:correlation withCompletion:^(BOOL success, NSError *error) {
+  HKQuantity *diastolicQty = [HKQuantity quantityWithUnit:unit
+                                              doubleValue:diastolic];
+  HKQuantityType *diastolicType = [HKQuantityType
+      quantityTypeForIdentifier:HKQuantityTypeIdentifierBloodPressureDiastolic];
+  HKQuantitySample *diastolicSample =
+      [HKQuantitySample quantitySampleWithType:diastolicType
+                                      quantity:diastolicQty
+                                     startDate:startDate
+                                       endDate:endDate
+                                      metadata:metadata];
+
+  NSSet *objects = [NSSet setWithObjects:systolicSample, diastolicSample, nil];
+
+  HKCorrelationType *correlationType = [HKCorrelationType
+      correlationTypeForIdentifier:HKCorrelationTypeIdentifierBloodPressure];
+  HKCorrelation *correlation =
+      [HKCorrelation correlationWithType:correlationType
+                               startDate:startDate
+                                 endDate:endDate
+                                 objects:objects
+                                metadata:metadata];
+
+  [self.healthStore
+          saveObject:correlation
+      withCompletion:^(BOOL success, NSError *error) {
         if (!success) {
-            NSLog(@"error saving blood pressure: %@", error);
-            callback(@[RCTJSErrorFromNSError(error)]);
-            return;
+          NSLog(@"error saving blood pressure: %@", error);
+          callback(@[ RCTJSErrorFromNSError(error) ]);
+          return;
         }
-        
+
         NSMutableDictionary *result = [NSMutableDictionary dictionary];
         result[@"id"] = [correlation.UUID UUIDString];
         result[@"systolic"] = @(systolic);
         result[@"diastolic"] = @(diastolic);
         result[@"unit"] = [unit unitString];
-        result[@"startDate"] = [RCTAppleHealthKit buildISO8601StringFromDate:correlation.startDate];
-        result[@"endDate"] = [RCTAppleHealthKit buildISO8601StringFromDate:correlation.endDate];
-        
+        result[@"startDate"] = [RCTAppleHealthKit
+            buildISO8601StringFromDate:correlation.startDate];
+        result[@"endDate"] =
+            [RCTAppleHealthKit buildISO8601StringFromDate:correlation.endDate];
+
         if (correlation.metadata) {
-            result[@"metadata"] = correlation.metadata;
+          result[@"metadata"] = correlation.metadata;
         }
-        
-        callback(@[[NSNull null], result]);
-    }];
+
+        callback(@[ [NSNull null], result ]);
+      }];
 }
 
 - (void)vitals_getWalkingHeartRateAverage:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
