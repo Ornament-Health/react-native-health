@@ -119,7 +119,7 @@
                           }];
 }
 
-- (void)vitals_saveRestingHeartRateSample:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+- (void)vitals_saveRestingHeartRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     double value = [RCTAppleHealthKit doubleFromOptions:input key:@"value" withDefault:0];
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];

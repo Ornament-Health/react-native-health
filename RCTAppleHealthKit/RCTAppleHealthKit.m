@@ -372,23 +372,23 @@ RCT_EXPORT_METHOD(saveHeartRateSample:(NSDictionary *)input callback:(RCTRespons
     [self vitals_saveHeartRateSample:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(saveRestingHeartRateSample:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(saveRestingHeartRate:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self vitals_saveRestingHeartRateSample:input callback:callback];
+    [self vitals_saveRestingHeartRate:input callback:callback];
 }
 
-RCT_EXPORT_METHOD(saveBloodPressureSample:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(saveBloodPressure:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self vitals_saveBloodPressureSample:input callback:callback];
+    [self vitals_saveBloodPressure:input callback:callback];
 }
 
 
-RCT_EXPORT_METHOD(saveOxygenSaturationSample:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+RCT_EXPORT_METHOD(saveOxygenSaturation:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self vitals_saveOxygenSaturationSample:input callback:callback];
+    [self vitals_saveOxygenSaturation:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getWaterSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)

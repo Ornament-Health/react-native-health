@@ -240,7 +240,7 @@ declare module 'react-native-health' {
       callback: (error: string, result: HealthValue) => void,
     ): void
 
-    saveRestingHeartRateSample(
+    saveRestingHeartRate(
       options: HealthValueOptions,
       callback: (error: string, result: HealthValue) => void,
     ): void
@@ -300,7 +300,7 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<BloodPressureSampleValue>) => void,
     ): void
 
-    saveBloodPressureSample(
+    saveBloodPressure(
       options: HealthValueOptions & {
         bloodPressureSystolicValue: number
         bloodPressureDiastolicValue: number
@@ -428,7 +428,7 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
-    saveOxygenSaturationSample(
+    saveOxygenSaturation(
       options: HealthValueOptions,
       callback: (error: string, result: HealthValue) => void,
     ): void
@@ -864,7 +864,7 @@ declare module 'react-native-health' {
     lastEntry: string
     medianDays: number
     entryCount: number
-    sources: { name: string, bundleId: string }[]
+    sources: { name: string; bundleId: string }[]
   }
 
   export interface SleepValue extends BaseValue {
@@ -960,8 +960,7 @@ declare module 'react-native-health' {
     DAY = 1,
   }
 
-  export interface HealthStatisticsCommonInputOptions
-    extends HealthUnitOptions {
+  export interface HealthStatisticsCommonInputOptions extends HealthUnitOptions {
     aggregator: HealthStatisticsCommonAggregatorType
     interval?: HealthStatisticsIntervalType
     startDate?: string
@@ -976,8 +975,7 @@ declare module 'react-native-health' {
     endDate?: string
   }
 
-  export interface HealthStatisticsCumulativeInputOptions
-    extends HealthUnitOptions {
+  export interface HealthStatisticsCumulativeInputOptions extends HealthUnitOptions {
     aggregator: CumulativeAggregatorsType
     interval?: HealthStatisticsIntervalType
     startDate: string
@@ -1180,8 +1178,10 @@ declare module 'react-native-health' {
     metadata?: RecordMetadata
   }
 
-  export interface HealthActivityOptions
-    extends Omit<Omit<HealthValueOptions, 'unit'>, 'value'> {
+  export interface HealthActivityOptions extends Omit<
+    Omit<HealthValueOptions, 'unit'>,
+    'value'
+  > {
     type: HealthActivity
   }
 
