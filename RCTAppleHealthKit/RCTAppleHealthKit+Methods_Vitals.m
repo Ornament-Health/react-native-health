@@ -193,10 +193,10 @@
 - (void)vitals_saveBloodPressure:(NSDictionary *)input
                         callback:(RCTResponseSenderBlock)callback {
   double systolic = [RCTAppleHealthKit doubleFromOptions:input
-                                                     key:@"systolic"
+                                                     key:@"bloodPressureSystolicValue"
                                              withDefault:-1];
   double diastolic = [RCTAppleHealthKit doubleFromOptions:input
-                                                      key:@"diastolic"
+                                                      key:@"bloodPressureDiastolicValue"
                                               withDefault:-1];
 
   NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input
