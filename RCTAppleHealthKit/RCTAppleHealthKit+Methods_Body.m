@@ -87,7 +87,18 @@
             callback(@[RCTJSErrorFromNSError(error)]);
             return;
         }
-        callback(@[[NSNull null], @(weight)]);
+        
+        NSString *startDateString = [RCTAppleHealthKit buildISO8601StringFromDate:weightSample.startDate];
+        NSString *endDateString = [RCTAppleHealthKit buildISO8601StringFromDate:weightSample.endDate];
+
+        NSDictionary *result = @{
+            @"id" : [weightSample.UUID UUIDString],
+            @"value" : @(weight),
+            @"startDate" : startDateString,
+            @"endDate" : endDateString
+        };
+
+        callback(@[[NSNull null], result]);
     }];
 }
 
@@ -245,7 +256,15 @@
             callback(@[RCTJSErrorFromNSError(error)]);
             return;
         }
-        callback(@[[NSNull null], @(height)]);
+                
+        NSDictionary *result = @{
+            @"id" : [heightSample.UUID UUIDString],
+            @"value" : @(height),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:heightSample.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:heightSample.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
     }];
 }
 
@@ -505,7 +524,15 @@
             callback(@[RCTMakeError(@"error saving body temperature sample", error, nil)]);
             return;
         }
-        callback(@[[NSNull null], @(temperature)]);
+        
+        NSDictionary *result = @{
+            @"id" : [bodyTemperatureSample.UUID UUIDString],
+            @"value" : @(temperature),
+            @"startDate" : [RCTAppleHealthKit buildISO8601StringFromDate:bodyTemperatureSample.startDate],
+            @"endDate" : [RCTAppleHealthKit buildISO8601StringFromDate:bodyTemperatureSample.endDate]
+        };
+        
+        callback(@[[NSNull null], result]);
     }];
 }
 
