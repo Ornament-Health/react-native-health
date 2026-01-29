@@ -161,6 +161,18 @@
     NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:[NSDate date]];
     NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
 
+    NSTimeInterval maxDuration = 345600.0; 
+    
+    NSTimeInterval duration = [endDate timeIntervalSinceDate:startDate];
+    
+    if (duration > maxDuration) {
+        NSDictionary *errorInfo = @{
+            @"reason": [NSString stringWithFormat:@"Duration (%.0f seconds) exceeds the maximum allowed (%.0f seconds) for Oxygen Saturation.", duration, maxDuration]
+        };
+        callback(@[RCTMakeError(@"Invalid duration", errorInfo, nil)]);
+        return;
+    }
+
     double valueForHK = value / 100.0;
 
     HKQuantityType *type = [HKQuantityType quantityTypeForIdentifier:HKQuantityTypeIdentifierOxygenSaturation];
