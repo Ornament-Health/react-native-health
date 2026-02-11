@@ -240,6 +240,11 @@ declare module 'react-native-health' {
       callback: (error: string, result: HealthValue) => void,
     ): void
 
+    saveRestingHeartRate(
+      options: HealthValueOptions,
+      callback: (error: string, result: HealthValue) => void,
+    ): void
+
     getWaterSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
@@ -293,6 +298,14 @@ declare module 'react-native-health' {
     getBloodPressureSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<BloodPressureSampleValue>) => void,
+    ): void
+
+    saveBloodPressure(
+      options: HealthValueOptions & {
+        bloodPressureSystolicValue: number
+        bloodPressureDiastolicValue: number
+      },
+      callback: (error: string, result: HealthValue) => void,
     ): void
 
     getRespiratoryRateSamples(
@@ -413,6 +426,11 @@ declare module 'react-native-health' {
     getOxygenSaturationSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
+    ): void
+
+    saveOxygenSaturation(
+      options: HealthValueOptions,
+      callback: (error: string, result: HealthValue) => void,
     ): void
 
     getElectrocardiogramSamples(
@@ -798,6 +816,11 @@ declare module 'react-native-health' {
       ) => void,
     ): void
 
+    deleteSampleById(
+      options: { type: string; id: string },
+      callback: (error: string, result: number) => void,
+    ): void
+
     Constants: Constants
   }
 
@@ -841,7 +864,7 @@ declare module 'react-native-health' {
     lastEntry: string
     medianDays: number
     entryCount: number
-    sources: { name: string, bundleId: string }[]
+    sources: { name: string; bundleId: string }[]
   }
 
   export interface SleepValue extends BaseValue {
@@ -937,8 +960,7 @@ declare module 'react-native-health' {
     DAY = 1,
   }
 
-  export interface HealthStatisticsCommonInputOptions
-    extends HealthUnitOptions {
+  export interface HealthStatisticsCommonInputOptions extends HealthUnitOptions {
     aggregator: HealthStatisticsCommonAggregatorType
     interval?: HealthStatisticsIntervalType
     startDate?: string
@@ -953,8 +975,7 @@ declare module 'react-native-health' {
     endDate?: string
   }
 
-  export interface HealthStatisticsCumulativeInputOptions
-    extends HealthUnitOptions {
+  export interface HealthStatisticsCumulativeInputOptions extends HealthUnitOptions {
     aggregator: CumulativeAggregatorsType
     interval?: HealthStatisticsIntervalType
     startDate: string
@@ -1157,8 +1178,10 @@ declare module 'react-native-health' {
     metadata?: RecordMetadata
   }
 
-  export interface HealthActivityOptions
-    extends Omit<Omit<HealthValueOptions, 'unit'>, 'value'> {
+  export interface HealthActivityOptions extends Omit<
+    Omit<HealthValueOptions, 'unit'>,
+    'value'
+  > {
     type: HealthActivity
   }
 
