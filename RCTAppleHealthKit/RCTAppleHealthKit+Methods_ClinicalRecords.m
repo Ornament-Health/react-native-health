@@ -62,6 +62,26 @@
     }];
 }
 
+- (void)clinicalRecords_getClinicalAuthStatus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    if (@available(iOS 12.0, *)) {
+        HKClinicalType *labResultType = [HKClinicalType clinicalTypeForIdentifier:HKClinicalTypeIdentifierLabResultRecord];
+        HKAuthorizationStatus status = [self.healthStore authorizationStatusForType:labResultType];
+
+        BOOL authorized = (status == HKAuthorizationStatusSharingAuthorized);
+        BOOL denied = (status == HKAuthorizationStatusSharingDenied);
+        BOOL notDetermined = (status == HKAuthorizationStatusNotDetermined);
+
+        callback(@[[NSNull null], @{
+            @"authorized": @(authorized),
+            @"denied": @(denied),
+            @"notDetermined": @(notDetermined)
+        }]);
+    } else {
+        callback(@[RCTMakeError(@"Clinical records require iOS 12.0 or later", nil, nil)]);
+    }
+}
+
 - (void)clinical_registerObserver:(NSString *)type bridge:(RCTBridge *)bridge hasListeners:(bool)hasListeners
 {
     HKSampleType *recordType = [RCTAppleHealthKit clinicalTypeFromName:type];

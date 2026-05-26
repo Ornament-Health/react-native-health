@@ -625,6 +625,12 @@ RCT_EXPORT_METHOD(getClinicalRecords:(NSDictionary *)input callback:(RCTResponse
     [self clinicalRecords_getClinicalRecords:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getClinicalAuthStatus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self clinicalRecords_getClinicalAuthStatus:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getStatisticBodyMass:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
@@ -1229,7 +1235,11 @@ RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponse
 - (void)emitEventInternal:(NSNotification *)notification {
   if (self.hasListeners) {
     self.callableJSModules = [RCTAppleHealthKit sharedJsModule];
+      
+    #if !defined(RCT_REMOVE_LEGACY_ARCH)
     [self.callableJSModules setBridge:self.bridge];
+    #endif
+      
     [self sendEventWithName:notification.name
                    body:notification.userInfo];
   }
