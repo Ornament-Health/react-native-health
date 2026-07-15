@@ -631,6 +631,12 @@ RCT_EXPORT_METHOD(getClinicalAuthStatus:(NSDictionary *)input callback:(RCTRespo
     [self clinicalRecords_getClinicalAuthStatus:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(supportsHealthRecords:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self clinicalRecords_supportsHealthRecords:callback];
+}
+
 RCT_EXPORT_METHOD(getStatisticBodyMass:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];

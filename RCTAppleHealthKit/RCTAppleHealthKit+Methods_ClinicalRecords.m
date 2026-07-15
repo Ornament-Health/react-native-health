@@ -82,6 +82,17 @@
     }
 }
 
+// Health Records is region-gated by the device Region setting (US/UK/Canada);
+// unlike +isHealthDataAvailable this can flip at runtime, so don't cache it.
+- (void)clinicalRecords_supportsHealthRecords:(RCTResponseSenderBlock)callback
+{
+    if (@available(iOS 12.0, *)) {
+        callback(@[[NSNull null], @([self.healthStore supportsHealthRecords])]);
+    } else {
+        callback(@[[NSNull null], @(NO)]);
+    }
+}
+
 - (void)clinical_registerObserver:(NSString *)type bridge:(RCTBridge *)bridge hasListeners:(bool)hasListeners
 {
     HKSampleType *recordType = [RCTAppleHealthKit clinicalTypeFromName:type];
