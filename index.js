@@ -103,6 +103,7 @@ export const HealthKit = {
   getHeadphoneAudioExposure: AppleHealthKit.getHeadphoneAudioExposure,
   getClinicalRecords: AppleHealthKit.getClinicalRecords,
   getClinicalAuthStatus: AppleHealthKit.getClinicalAuthStatus,
+  supportsHealthRecords: AppleHealthKit.supportsHealthRecords,
   getActivitySummary: AppleHealthKit.getActivitySummary,
   getInsulinDeliverySamples: AppleHealthKit.getInsulinDeliverySamples,
   saveInsulinDeliverySample: AppleHealthKit.saveInsulinDeliverySample,

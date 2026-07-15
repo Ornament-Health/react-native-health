@@ -468,6 +468,10 @@ declare module 'react-native-health' {
       callback: (error: string, result: ClinicalAuthStatus) => void,
     ): void
 
+    supportsHealthRecords(
+      callback: (error: string, supported: boolean) => void,
+    ): void
+
     setObserver(options: HealthObserverOptions): void
 
     getActivitySummary(
