@@ -10,6 +10,8 @@
 @interface RCTAppleHealthKit (Methods_ClinicalRecords)
 
 - (void)clinicalRecords_getClinicalRecords:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+- (void)clinicalRecords_getClinicalAuthStatus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+- (void)clinicalRecords_supportsHealthRecords:(RCTResponseSenderBlock)callback;
 - (void)clinical_registerObserver:(NSString *)type bridge:(RCTBridge *)bridge hasListeners:(bool)hasListeners;
 
 @end

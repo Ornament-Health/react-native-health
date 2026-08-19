@@ -463,6 +463,15 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthClinicalRecord>) => void,
     ): void
 
+    getClinicalAuthStatus(
+      options: Object,
+      callback: (error: string, result: ClinicalAuthStatus) => void,
+    ): void
+
+    supportsHealthRecords(
+      callback: (error: string, supported: boolean) => void,
+    ): void
+
     setObserver(options: HealthObserverOptions): void
 
     getActivitySummary(
@@ -1217,11 +1226,23 @@ declare module 'react-native-health' {
     VitalSignRecord = 'VitalSignRecord',
   }
 
+  export interface FHIRResource {
+    resourceType: string
+    id?: string
+    [key: string]: unknown
+  }
+
+  export interface ClinicalAuthStatus {
+    authorized: boolean
+    denied: boolean
+    notDetermined: boolean
+  }
+
   export interface HealthClinicalRecord extends BaseValue {
     sourceName: string
     sourceId: string
     displayName: string
-    fhirData: any
+    fhirData: FHIRResource[]
   }
 
   /* Health Constants */
