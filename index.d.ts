@@ -830,10 +830,51 @@ declare module 'react-native-health' {
       callback: (error: string, result: number) => void,
     ): void
 
+    saveMealNutrition(
+      options: MealNutritionOptions,
+      callback: (error: string, result: MealNutritionSaveResult) => void,
+    ): void
+
+    deleteMealNutrition(
+      options: { mealUUID: string },
+      callback: (error: string, result: MealNutritionDeleteResult) => void,
+    ): void
+
+    hasMealNutrition(
+      options: { mealUUID: string },
+      callback: (error: string, result: boolean) => void,
+    ): void
+
     Constants: Constants
   }
 
   /* Inputs and Payloads */
+
+  export type MealNutritionType =
+    | HealthPermission.EnergyConsumed
+    | HealthPermission.Protein
+    | HealthPermission.FatTotal
+    | HealthPermission.Carbohydrates
+    | HealthPermission.Fiber
+
+  export interface MealNutritionOptions {
+    mealUUID: string
+    // Must grow with every write of the meal: Health keeps the sample with the highest version.
+    version: number
+    date: string
+    // EnergyConsumed in kcal, the rest in grams. A missing or zero value deletes that sample.
+    values: Partial<Record<MealNutritionType, number>>
+  }
+
+  export interface MealNutritionSaveResult {
+    written: MealNutritionType[]
+    denied: MealNutritionType[]
+  }
+
+  export interface MealNutritionDeleteResult {
+    deleted: MealNutritionType[]
+    denied: MealNutritionType[]
+  }
 
   export interface HealthDateOfBirth {
     value: string
