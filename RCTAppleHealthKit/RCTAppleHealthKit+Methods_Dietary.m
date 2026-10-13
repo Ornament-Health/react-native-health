@@ -634,6 +634,10 @@ static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
         }
 
         id amount = values[name];
+        // A type left out of `values` keeps whatever the meal has in Health.
+        if (amount == nil) {
+            continue;
+        }
         double value = [amount isKindOfClass:[NSNumber class]] ? [amount doubleValue] : 0;
         if (value <= 0) {
             [zeroed addObject:name];

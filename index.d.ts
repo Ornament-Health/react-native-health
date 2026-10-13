@@ -862,7 +862,7 @@ declare module 'react-native-health' {
     // Must grow with every write of the meal: Health keeps the sample with the highest version.
     version: number
     date: string
-    // EnergyConsumed in kcal, the rest in grams. A missing or zero value deletes that sample.
+    // EnergyConsumed in kcal, the rest in grams. A zero value deletes that sample; a type left out keeps it.
     values: Partial<Record<MealNutritionType, number>>
   }
 
