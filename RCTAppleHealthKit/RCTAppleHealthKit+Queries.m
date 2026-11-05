@@ -904,7 +904,14 @@
 
     NSCalendar *calendar = [NSCalendar currentCalendar];
     NSDateComponents *interval = [[NSDateComponents alloc] init];
-    interval.minute = period;
+    // A period of whole days steps by calendar days: 1440 minutes stay 24 hours
+    // across a daylight saving change, and every bucket after it would start an
+    // hour off midnight, on the wrong day.
+    if (period > 0 && period % (60 * 24) == 0) {
+        interval.day = period / (60 * 24);
+    } else {
+        interval.minute = period;
+    }
 
     NSDateComponents *anchorComponents = [calendar components:NSCalendarUnitHour | NSCalendarUnitMinute | NSCalendarUnitSecond | NSCalendarUnitDay | NSCalendarUnitMonth | NSCalendarUnitYear
                                                      fromDate:startDate];
