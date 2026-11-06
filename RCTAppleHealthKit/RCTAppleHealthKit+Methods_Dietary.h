@@ -20,4 +20,8 @@
 - (void)dietary_getProteinSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 - (void)dietary_getFiberSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 - (void)dietary_getTotalFatSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
+- (void)dietary_saveMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+- (void)dietary_deleteMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+- (void)dietary_hasMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 @end

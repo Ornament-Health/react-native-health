@@ -8,10 +8,21 @@
 
 #import "RCTAppleHealthKit+Methods_Dietary.h"
 #import "RCTAppleHealthKit+Queries.h"
+#import "RCTAppleHealthKit+TypesAndPermissions.h"
 #import "RCTAppleHealthKit+Utils.h"
 
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcher.h>
+
+// Every sample of a meal carries the app's meal id under this key, so the meal's
+// samples are found, replaced and deleted together.
+static NSString *const RCTMealUUIDMetadataKey = @"OrnamentMealUUID";
+
+// The values a meal is written as, named as in Permissions.
+static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
+{
+    return @[@"EnergyConsumed", @"Protein", @"FatTotal", @"Carbohydrates", @"Fiber"];
+}
 
 @implementation RCTAppleHealthKit (Methods_Dietary)
 
@@ -597,6 +608,181 @@
             return;
         }
     }];
+}
+
+- (void)dietary_saveMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSString *mealUUID = [RCTAppleHealthKit stringFromOptions:input key:@"mealUUID" withDefault:nil];
+    NSDate *date = [RCTAppleHealthKit dateFromOptions:input key:@"date" withDefault:nil];
+    id version = input[@"version"];
+    id values = input[@"values"];
+    if (mealUUID == nil || date == nil || ![version isKindOfClass:[NSNumber class]] || ![values isKindOfClass:[NSDictionary class]]) {
+        callback(@[RCTMakeError(@"mealUUID, date, version and values are required", nil, nil)]);
+        return;
+    }
+
+    NSMutableArray<HKQuantitySample *> *samples = [NSMutableArray array];
+    NSMutableArray<NSString *> *written = [NSMutableArray array];
+    NSMutableArray<NSString *> *zeroed = [NSMutableArray array];
+    NSMutableArray<NSString *> *denied = [NSMutableArray array];
+
+    for (NSString *name in RCTMealNutritionTypeNames()) {
+        HKQuantityType *type = (HKQuantityType *)[self getWritePermFromText:name];
+        if ([self.healthStore authorizationStatusForType:type] != HKAuthorizationStatusSharingAuthorized) {
+            [denied addObject:name];
+            continue;
+        }
+
+        id amount = values[name];
+        // A type left out of `values` keeps whatever the meal has in Health.
+        if (amount == nil) {
+            continue;
+        }
+        double value = [amount isKindOfClass:[NSNumber class]] ? [amount doubleValue] : 0;
+        if (value <= 0) {
+            [zeroed addObject:name];
+            continue;
+        }
+
+        HKUnit *unit = [name isEqualToString:@"EnergyConsumed"] ? [HKUnit kilocalorieUnit] : [HKUnit gramUnit];
+        // The same sync identifier with a higher version replaces the sample instead of adding one.
+        NSDictionary *metadata = @{
+            HKMetadataKeySyncIdentifier: [NSString stringWithFormat:@"%@:%@", mealUUID, name],
+            HKMetadataKeySyncVersion: @([version longLongValue]),
+            RCTMealUUIDMetadataKey: mealUUID,
+        };
+        [samples addObject:[HKQuantitySample quantitySampleWithType:type
+                                                           quantity:[HKQuantity quantityWithUnit:unit doubleValue:value]
+                                                          startDate:date
+                                                            endDate:date
+                                                           metadata:metadata]];
+        [written addObject:name];
+    }
+
+    NSDictionary *result = @{@"written": written, @"denied": denied};
+
+    // A value edited down to zero must not leave the previous one in Health.
+    [self dietary_deleteMealSamples:mealUUID ofTypes:zeroed completion:^(NSArray<NSString *> *deleted, NSError *deleteError) {
+        if (deleteError) {
+            callback(@[RCTMakeError(@"An error occurred while clearing the meal nutrition", deleteError, nil)]);
+            return;
+        }
+        if (samples.count == 0) {
+            callback(@[[NSNull null], result]);
+            return;
+        }
+        [self.healthStore saveObjects:samples withCompletion:^(BOOL success, NSError *error) {
+            if (!success) {
+                callback(@[RCTMakeError(@"An error occurred while saving the meal nutrition", error, nil)]);
+                return;
+            }
+            callback(@[[NSNull null], result]);
+        }];
+    }];
+}
+
+- (void)dietary_deleteMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSString *mealUUID = [RCTAppleHealthKit stringFromOptions:input key:@"mealUUID" withDefault:nil];
+    if (mealUUID == nil) {
+        callback(@[RCTMakeError(@"mealUUID is required", nil, nil)]);
+        return;
+    }
+
+    NSMutableArray<NSString *> *authorized = [NSMutableArray array];
+    NSMutableArray<NSString *> *denied = [NSMutableArray array];
+    for (NSString *name in RCTMealNutritionTypeNames()) {
+        HKObjectType *type = [self getWritePermFromText:name];
+        if ([self.healthStore authorizationStatusForType:type] == HKAuthorizationStatusSharingAuthorized) {
+            [authorized addObject:name];
+        } else {
+            [denied addObject:name];
+        }
+    }
+
+    [self dietary_deleteMealSamples:mealUUID ofTypes:authorized completion:^(NSArray<NSString *> *deleted, NSError *error) {
+        if (error) {
+            callback(@[RCTMakeError(@"An error occurred while deleting the meal nutrition", error, nil)]);
+            return;
+        }
+        callback(@[[NSNull null], @{@"deleted": deleted, @"denied": denied}]);
+    }];
+}
+
+- (void)dietary_hasMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSString *mealUUID = [RCTAppleHealthKit stringFromOptions:input key:@"mealUUID" withDefault:nil];
+    if (mealUUID == nil) {
+        callback(@[RCTMakeError(@"mealUUID is required", nil, nil)]);
+        return;
+    }
+
+    NSPredicate *predicate = [HKQuery predicateForObjectsWithMetadataKey:RCTMealUUIDMetadataKey allowedValues:@[mealUUID]];
+    NSObject *lock = [NSObject new];
+    __block BOOL found = NO;
+    __block NSError *firstError = nil;
+    dispatch_group_t group = dispatch_group_create();
+
+    // HealthKit always returns the app its own samples, even without read permission.
+    for (NSString *name in RCTMealNutritionTypeNames()) {
+        dispatch_group_enter(group);
+        HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:(HKSampleType *)[self getWritePermFromText:name]
+                                                               predicate:predicate
+                                                                   limit:1
+                                                         sortDescriptors:nil
+                                                          resultsHandler:^(HKSampleQuery *query, NSArray<__kindof HKSample *> *results, NSError *error) {
+            @synchronized (lock) {
+                if (results.count > 0) {
+                    found = YES;
+                } else if (error != nil && firstError == nil) {
+                    firstError = error;
+                }
+            }
+            dispatch_group_leave(group);
+        }];
+        [self.healthStore executeQuery:query];
+    }
+
+    dispatch_group_notify(group, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        if (!found && firstError != nil) {
+            callback(@[RCTMakeError(@"An error occurred while looking up the meal nutrition", firstError, nil)]);
+            return;
+        }
+        callback(@[[NSNull null], @(found)]);
+    });
+}
+
+// Deletes the meal's samples of the given types; `deleted` names the types that had any.
+- (void)dietary_deleteMealSamples:(NSString *)mealUUID
+                          ofTypes:(NSArray<NSString *> *)typeNames
+                       completion:(void (^)(NSArray<NSString *> *deleted, NSError *error))completion
+{
+    NSPredicate *predicate = [HKQuery predicateForObjectsWithMetadataKey:RCTMealUUIDMetadataKey allowedValues:@[mealUUID]];
+    NSMutableArray<NSString *> *deleted = [NSMutableArray array];
+    __block NSError *firstError = nil;
+    dispatch_group_t group = dispatch_group_create();
+
+    for (NSString *name in typeNames) {
+        dispatch_group_enter(group);
+        [self.healthStore deleteObjectsOfType:[self getWritePermFromText:name]
+                                    predicate:predicate
+                               withCompletion:^(BOOL success, NSUInteger deletedObjectCount, NSError *error) {
+            // HealthKit reports "no data" when nothing matches the predicate; that is not a failure here.
+            BOOL isNoData = [error.domain isEqualToString:HKErrorDomain] && error.code == HKErrorNoData;
+            @synchronized (deleted) {
+                if (success && deletedObjectCount > 0) {
+                    [deleted addObject:name];
+                } else if (!success && !isNoData && firstError == nil) {
+                    firstError = error;
+                }
+            }
+            dispatch_group_leave(group);
+        }];
+    }
+
+    dispatch_group_notify(group, dispatch_get_global_queue(QOS_CLASS_UTILITY, 0), ^{
+        completion(deleted, firstError);
+    });
 }
 
 @end
