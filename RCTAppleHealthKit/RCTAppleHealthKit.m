@@ -593,7 +593,7 @@ RCT_EXPORT_METHOD(getAuthStatus: (NSDictionary *)input callback:(RCTResponseSend
 RCT_EXPORT_METHOD(getEarliestAuthorizedSampleDates: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
-    [self getEarliestAuthorizedSampleDates:input callback:callback];
+    [self fetchEarliestAuthorizedSampleDates:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getLatestBloodAlcoholContent: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
@@ -1186,7 +1186,7 @@ RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponse
     history and a type that was not shared are both left out. Before iOS 27 every app reads the whole history, so
     `supported` is false.
  */
-- (void)getEarliestAuthorizedSampleDates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+- (void)fetchEarliestAuthorizedSampleDates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     NSArray *readPermsNamesArray = [[input objectForKey:@"permissions"] objectForKey:@"read"];
     if (readPermsNamesArray == nil) {
