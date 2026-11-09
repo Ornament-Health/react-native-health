@@ -742,7 +742,6 @@
         return;
     }
 
-    NSMutableArray *samplesOutput = [NSMutableArray new];
     HKSampleType *sample =[HKQuantityType quantityTypeForIdentifier:quantity];
 
     if ([sample isKindOfClass:[HKCharacteristicType class]]) {
@@ -818,6 +817,22 @@
 
         dispatch_semaphore_wait(semaphore, DISPATCH_TIME_FOREVER);
     };
+
+    callback(@[[NSNull null], [self dietaryAveragesFromSamples:samplesResultArray
+                                                       quantity:quantity
+                                                           unit:unit
+                                                   intervalType:intervalType
+                                                   dailyAverage:dailyAverage]]);
+}
+
+// Groups samples of one dietary type by interval and averages each interval:
+// the result every getStatisticDietary* method reports.
+- (NSArray *)dietaryAveragesFromSamples:(NSArray<__kindof HKSample *> *)samplesResultArray
+                               quantity:(HKQuantityTypeIdentifier)quantity
+                                   unit:(HKUnit *)unit
+                           intervalType:(RCTInterval)intervalType
+                           dailyAverage:(BOOL)dailyAverage {
+    NSMutableArray *samplesOutput = [NSMutableArray new];
 
     NSDateFormatter *intervalDateFormatter = [[NSDateFormatter alloc] init];
     if (intervalType == RCTIntervalDay) {
@@ -934,7 +949,166 @@
     NSArray *sortedResult = [resultWithSumForInterval
                              sortedArrayUsingDescriptors:sortDescriptors];
 
-    callback(@[[NSNull null], sortedResult]);
+    return sortedResult;
+}
+
+// MARK: - Dietary daily averages of several types
+
+// The unit the getStatisticDietary* method of a type reports it in.
+static HKUnit *DietaryStatisticUnit(HKQuantityTypeIdentifier identifier) {
+    if ([identifier isEqualToString:HKQuantityTypeIdentifierDietaryEnergyConsumed]) {
+        return HKUnit.kilocalorieUnit;
+    }
+    if ([identifier isEqualToString:HKQuantityTypeIdentifierDietaryWater]) {
+        return HKUnit.literUnit;
+    }
+    if ([identifier isEqualToString:HKQuantityTypeIdentifierInsulinDelivery]) {
+        return HKUnit.internationalUnit;
+    }
+    return HKUnit.gramUnit;
+}
+
+// What the getStatisticDietary* methods report with DAILY_AVERAGE, for several
+// types read by one HealthKit query instead of one query per type.
+- (void)statistics_getStatisticDietaryDailyAverages:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback {
+    if (@available(iOS 15.0, *)) {
+        [self dietaryDailyAveragesRequest:input callback:callback];
+    } else {
+        callback(@[RCTMakeError(@"RNHealth: getStatisticDietaryDailyAverages needs iOS 15", nil, nil)]);
+    }
+}
+
+- (void)dietaryDailyAveragesRequest:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback API_AVAILABLE(ios(15.0)) {
+    NSArray<NSString *> *types = [[NSOrderedSet orderedSetWithArray:[RCTAppleHealthKit typesFromOptions:input]] array];
+    NSDate *startDate = [RCTAppleHealthKit dateFromOptions:input key:@"startDate" withDefault:nil];
+    NSDate *endDate = [RCTAppleHealthKit dateFromOptions:input key:@"endDate" withDefault:[NSDate date]];
+    RCTInterval intervalType = (RCTInterval) [RCTAppleHealthKit uintFromOptions:input key:@"interval" withDefault:RCTIntervalMonth];
+    NSUInteger limit = [RCTAppleHealthKit uintFromOptions:input key:@"limit" withDefault:5000];
+
+    if (!((intervalType == RCTIntervalDay) || (intervalType == RCTIntervalMonth))) {
+        callback(@[RCTMakeError(@"RNHealth: interval type isn't valid", nil, nil)]);
+        return;
+    }
+
+    if (types.count == 0) {
+        callback(@[RCTMakeError(@"RNHealth: No data types provided", nil, nil)]);
+        return;
+    }
+
+    NSPredicate *predicate = [RCTAppleHealthKit predicateForAnchoredQueries:nil startDate:startDate endDate:endDate];
+    NSMutableArray<HKQuantityTypeIdentifier> *identifiers = [NSMutableArray new];
+    NSMutableArray<HKQueryDescriptor *> *descriptors = [NSMutableArray new];
+
+    for (NSString *type in types) {
+        HKQuantityTypeIdentifier identifier = [@"HKQuantityTypeIdentifier" stringByAppendingString:type];
+        HKQuantityType *quantityType = [HKQuantityType quantityTypeForIdentifier:identifier];
+
+        if (quantityType == nil || ![quantityType isCompatibleWithUnit:DietaryStatisticUnit(identifier)]) {
+            callback(@[RCTMakeError([NSString stringWithFormat:@"RNHealth: %@ is not a dietary type", type], nil, nil)]);
+            return;
+        }
+
+        [identifiers addObject:identifier];
+        [descriptors addObject:[[HKQueryDescriptor alloc] initWithSampleType:quantityType predicate:predicate]];
+    }
+
+    void (^respond)(NSArray<HKSample *> *) = ^(NSArray<HKSample *> *samples) {
+        NSMutableDictionary<NSString *, NSMutableArray<HKSample *> *> *samplesByType = [NSMutableDictionary new];
+        for (HKSample *sample in samples) {
+            NSString *identifier = sample.sampleType.identifier;
+            if (samplesByType[identifier] == nil) {
+                samplesByType[identifier] = [NSMutableArray new];
+            }
+            [samplesByType[identifier] addObject:sample];
+        }
+
+        NSMutableDictionary *result = [NSMutableDictionary new];
+        [types enumerateObjectsUsingBlock:^(NSString *type, NSUInteger index, BOOL *stop) {
+            HKQuantityTypeIdentifier identifier = identifiers[index];
+            result[type] = [self dietaryAveragesFromSamples:samplesByType[identifier] ?: @[]
+                                                   quantity:identifier
+                                                       unit:DietaryStatisticUnit(identifier)
+                                               intervalType:intervalType
+                                               dailyAverage:YES];
+        }];
+
+        callback(@[[NSNull null], result]);
+    };
+
+    [self fetchSamplesForDescriptors:descriptors limit:limit anchor:nil collected:[NSMutableArray new] completion:^(NSArray<HKSample *> *samples, NSError *error) {
+        // One type the app never asked to read fails the whole query. A query
+        // per type reads that one as empty and the others as usual.
+        if ([error.domain isEqualToString:HKErrorDomain] && error.code == HKErrorAuthorizationNotDetermined) {
+            [self fetchSamplesForEachDescriptor:descriptors limit:limit completion:respond];
+            return;
+        }
+
+        if (error) {
+            callback(@[RCTJSErrorFromNSError(error)]);
+            return;
+        }
+
+        respond(samples);
+    }];
+}
+
+// Every sample the descriptors match, read `limit` at a time.
+- (void)fetchSamplesForDescriptors:(NSArray<HKQueryDescriptor *> *)descriptors
+                             limit:(NSUInteger)limit
+                            anchor:(HKQueryAnchor *)anchor
+                         collected:(NSMutableArray<HKSample *> *)collected
+                        completion:(void (^)(NSArray<HKSample *> *samples, NSError *error))completion API_AVAILABLE(ios(15.0)) {
+    HKAnchoredObjectQuery *query = [[HKAnchoredObjectQuery alloc] initWithQueryDescriptors:descriptors
+                                                                                    anchor:anchor
+                                                                                     limit:limit
+                                                                            resultsHandler:^(HKAnchoredObjectQuery *query,
+                                                                                             NSArray<__kindof HKSample *> *samples,
+                                                                                             NSArray<HKDeletedObject *> *deletedObjects,
+                                                                                             HKQueryAnchor *newAnchor,
+                                                                                             NSError *error) {
+        if (error) {
+            completion(nil, error);
+            return;
+        }
+
+        [collected addObjectsFromArray:samples];
+
+        // A page short of the limit is the last one: asking for the next, empty
+        // one would cost another query.
+        if (limit == HKObjectQueryNoLimit || samples.count + deletedObjects.count < limit) {
+            completion(collected, nil);
+            return;
+        }
+
+        [self fetchSamplesForDescriptors:descriptors limit:limit anchor:newAnchor collected:collected completion:completion];
+    }];
+
+    [self.healthStore executeQuery:query];
+}
+
+// Each descriptor read by a query of its own. A type that fails reads as
+// empty, as it does with its getStatisticDietary* method.
+- (void)fetchSamplesForEachDescriptor:(NSArray<HKQueryDescriptor *> *)descriptors
+                                limit:(NSUInteger)limit
+                           completion:(void (^)(NSArray<HKSample *> *samples))completion API_AVAILABLE(ios(15.0)) {
+    NSMutableArray<HKSample *> *samples = [NSMutableArray new];
+    dispatch_group_t group = dispatch_group_create();
+
+    for (HKQueryDescriptor *descriptor in descriptors) {
+        dispatch_group_enter(group);
+        [self fetchSamplesForDescriptors:@[descriptor] limit:limit anchor:nil collected:[NSMutableArray new] completion:^(NSArray<HKSample *> *typeSamples, NSError *error) {
+            if (typeSamples != nil) {
+                @synchronized (samples) {
+                    [samples addObjectsFromArray:typeSamples];
+                }
+            }
+            dispatch_group_leave(group);
+        }];
+    }
+
+    dispatch_group_notify(group, dispatch_get_global_queue(QOS_CLASS_DEFAULT, 0), ^{
+        completion(samples);
+    });
 }
 
 @end

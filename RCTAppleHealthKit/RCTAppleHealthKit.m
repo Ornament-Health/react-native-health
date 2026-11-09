@@ -943,6 +943,12 @@ RCT_EXPORT_METHOD(getStatisticInsulinDelivery:(NSDictionary *)input callback:(RC
     [self statistics_getStatisticInsulinDelivery:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getStatisticDietaryDailyAverages:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryDailyAverages:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getStatisticDistanceWheelchair:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];

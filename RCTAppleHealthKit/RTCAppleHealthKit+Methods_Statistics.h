@@ -84,6 +84,8 @@
 
 - (void)statistics_getStatisticInsulinDelivery:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
 
+- (void)statistics_getStatisticDietaryDailyAverages:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
+
 // MARK: - Activity
 
 - (void)statistics_getStatisticDistanceWheelchair:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback;
