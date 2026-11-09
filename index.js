@@ -142,6 +142,8 @@ export const HealthKit = {
   getStatisticDietaryVitaminC: AppleHealthKit.getStatisticDietaryVitaminC,
   getStatisticDietaryVitaminD: AppleHealthKit.getStatisticDietaryVitaminD,
   getStatisticInsulinDelivery: AppleHealthKit.getStatisticInsulinDelivery,
+  getStatisticDietaryDailyAverages:
+    AppleHealthKit.getStatisticDietaryDailyAverages,
 
   Constants: {
     Activities,

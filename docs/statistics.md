@@ -162,3 +162,35 @@ export type HealthStatisticsStepsAggregatorType = GenericAggregatorsType | Cumul
   }
 ]
 ```
+
+## Daily averages of several dietary types
+
+`getStatisticDietaryDailyAverages` returns what the `getStatisticDietary*` methods return with `DAILY_AVERAGE`, for several types at once. All of them are read by one `HKAnchoredObjectQuery` built from query descriptors, so the call costs one HealthKit query per page of `limit` samples instead of one query per type and page. iOS 15 and later.
+
+If the app was never asked to read one of the types, HealthKit fails the whole query; the method then reads the types one by one, and that type comes back empty.
+
+|name|type|required|
+|---|---|---|
+|types|string[]: quantity type identifiers without the `HKQuantityTypeIdentifier` prefix, e.g. `DietaryProtein`|✓|
+|interval|HealthStatisticsIntervalType||
+|startDate|string||
+|endDate|string||
+|limit|number: samples per page, 5000 by default||
+
+The values come in the unit of the type's own method: kilocalories for `DietaryEnergyConsumed`, liters for `DietaryWater`, international units for `InsulinDelivery`, grams for the rest.
+
+```typescript
+AppleHealthKit.getStatisticDietaryDailyAverages(
+  {
+    types: ['DietaryEnergyConsumed', 'DietaryProtein'],
+    interval: HealthStatisticsIntervalType.MONTH,
+    startDate: new Date(2021, 0, 1).toISOString(),
+  },
+  (err: string, results: Record<string, Array<HealthValue>>) => {
+    if (err) {
+      return
+    }
+    console.log(results.DietaryProtein)
+  },
+)
+```
