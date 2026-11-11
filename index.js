@@ -89,6 +89,8 @@ export const HealthKit = {
   getWorkoutRouteSamples: AppleHealthKit.getWorkoutRouteSamples,
   saveWorkout: AppleHealthKit.saveWorkout,
   getAuthStatus: AppleHealthKit.getAuthStatus,
+  getEarliestAuthorizedSampleDates:
+    AppleHealthKit.getEarliestAuthorizedSampleDates,
   getLatestBloodAlcoholContent: AppleHealthKit.getLatestBloodAlcoholContent,
   getBloodAlcoholContentSamples: AppleHealthKit.getBloodAlcoholContentSamples,
   saveBloodAlcoholContent: AppleHealthKit.saveBloodAlcoholContent,
