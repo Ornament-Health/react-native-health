@@ -583,6 +583,12 @@ RCT_EXPORT_METHOD(getAuthStatus: (NSDictionary *)input callback:(RCTResponseSend
     [self getAuthorizationStatus:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getRequestStatusForAuthorization: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self getAuthorizationRequestStatus:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getLatestBloodAlcoholContent: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
@@ -1171,6 +1177,47 @@ RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponse
     } else {
         callback(@[RCTMakeError(@"HealthKit data is not available", nil, nil)]);
     }
+}
+
+/*!
+    Whether initHealthKit with the same permissions would show the access sheet: some type in them has never been
+    asked for. getAuthStatus cannot tell this for read access, which HealthKit hides; a type the app only reads keeps
+    "not determined" until it is asked for, and every query for it fails with HKErrorAuthorizationNotDetermined.
+
+    Calls back with HKAuthorizationRequestStatus: 0 unknown, 1 should request, 2 unnecessary.
+ */
+- (void)getAuthorizationRequestStatus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    if (![HKHealthStore isHealthDataAvailable]) {
+        callback(@[RCTMakeError(@"HealthKit data is not available", nil, nil)]);
+        return;
+    }
+
+    NSDictionary* permissions = [input objectForKey:@"permissions"];
+    if (permissions == nil) {
+        callback(@[RCTMakeError(@"permissions must be provided in the options", nil, nil)]);
+        return;
+    }
+
+    NSSet* readTypes = [self getReadPermsFromOptions:[permissions objectForKey:@"read"]];
+    NSSet* writeTypes = [self getWritePermsFromOptions:[permissions objectForKey:@"write"]];
+
+    // HealthKit raises an exception, which crashes the app, when both sets are empty.
+    if ([readTypes count] == 0 && [writeTypes count] == 0) {
+        callback(@[RCTMakeError(@"at least 1 read or write permission must be set in options.permissions", nil, nil)]);
+        return;
+    }
+
+    [self.healthStore getRequestStatusForAuthorizationToShareTypes:writeTypes
+                                                          readTypes:readTypes
+                                                         completion:^(HKAuthorizationRequestStatus requestStatus, NSError *error) {
+        if (error) {
+            callback(@[RCTJSErrorFromNSError(error)]);
+            return;
+        }
+
+        callback(@[[NSNull null], @(requestStatus)]);
+    }];
 }
 
 /*!

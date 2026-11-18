@@ -398,6 +398,11 @@ declare module 'react-native-health' {
       callback: (err: string, results: HealthStatusResult) => void,
     ): void
 
+    getRequestStatusForAuthorization(
+      permissions: HealthKitPermissions,
+      callback: (err: string, status: HealthAuthorizationRequestStatus) => void,
+    ): void
+
     getLatestBloodAlcoholContent(
       options: HealthInputOptions,
       callback: (err: string, results: HealthValue) => void,
@@ -1560,6 +1565,13 @@ declare module 'react-native-health' {
       read: HealthStatusCode[]
       write: HealthStatusCode[]
     }
+  }
+
+  /** `HKAuthorizationRequestStatus`: would `initHealthKit` show the access sheet. */
+  export enum HealthAuthorizationRequestStatus {
+    Unknown = 0,
+    ShouldRequest = 1,
+    Unnecessary = 2,
   }
 
   export interface AnchoredQueryResults {
