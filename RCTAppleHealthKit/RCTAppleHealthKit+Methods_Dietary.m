@@ -24,6 +24,32 @@ static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
     return @[@"EnergyConsumed", @"Protein", @"FatTotal", @"Carbohydrates", @"Fiber"];
 }
 
+// JS null arrives as NSNull, which is not nil: HealthKit throws on it as a metadata value.
+static BOOL RCTIsMealUUID(id value)
+{
+    return [value isKindOfClass:[NSString class]] && [(NSString *)value length] > 0;
+}
+
+// HealthKit throws on a negative sync version, and a version past 2^53 is no longer exact in JS.
+static BOOL RCTIsMealVersion(id value)
+{
+    if (![value isKindOfClass:[NSNumber class]]) {
+        return NO;
+    }
+    double version = [value doubleValue];
+    return isfinite(version) && version >= 0 && version == floor(version) && version <= 9007199254740991.0;
+}
+
+// NaN and infinity would pass a plain `<= 0` check and reach HealthKit.
+static BOOL RCTIsMealAmount(id value)
+{
+    if (![value isKindOfClass:[NSNumber class]]) {
+        return NO;
+    }
+    double amount = [value doubleValue];
+    return isfinite(amount) && amount >= 0;
+}
+
 @implementation RCTAppleHealthKit (Methods_Dietary)
 
 - (void)dietary_getEnergyConsumedSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
@@ -616,43 +642,53 @@ static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
     NSDate *date = [RCTAppleHealthKit dateFromOptions:input key:@"date" withDefault:nil];
     id version = input[@"version"];
     id values = input[@"values"];
-    if (mealUUID == nil || date == nil || ![version isKindOfClass:[NSNumber class]] || ![values isKindOfClass:[NSDictionary class]]) {
-        callback(@[RCTMakeError(@"mealUUID, date, version and values are required", nil, nil)]);
+    if (!RCTIsMealUUID(mealUUID)) {
+        callback(@[RCTMakeError(@"mealUUID must be a non-empty string", nil, nil)]);
+        return;
+    }
+    if (!RCTIsMealVersion(version)) {
+        callback(@[RCTMakeError(@"version must be a whole number of 0 or more", nil, nil)]);
+        return;
+    }
+    if (date == nil || ![values isKindOfClass:[NSDictionary class]]) {
+        callback(@[RCTMakeError(@"date and values are required", nil, nil)]);
         return;
     }
 
     NSMutableArray<HKQuantitySample *> *samples = [NSMutableArray array];
     NSMutableArray<NSString *> *written = [NSMutableArray array];
-    NSMutableArray<NSString *> *zeroed = [NSMutableArray array];
     NSMutableArray<NSString *> *denied = [NSMutableArray array];
 
     for (NSString *name in RCTMealNutritionTypeNames()) {
+        id amount = values[name];
+        // A type left out of `values`, or sent as null, keeps whatever the meal has in Health.
+        BOOL isSent = amount != nil && amount != [NSNull null];
+        // Nothing is written before saveObjects, so returning here leaves Health untouched.
+        if (isSent && !RCTIsMealAmount(amount)) {
+            callback(@[RCTMakeError([NSString stringWithFormat:@"values.%@ must be a finite number of 0 or more", name], nil, nil)]);
+            return;
+        }
+
         HKQuantityType *type = (HKQuantityType *)[self getWritePermFromText:name];
         if ([self.healthStore authorizationStatusForType:type] != HKAuthorizationStatusSharingAuthorized) {
             [denied addObject:name];
             continue;
         }
-
-        id amount = values[name];
-        // A type left out of `values` keeps whatever the meal has in Health.
-        if (amount == nil) {
-            continue;
-        }
-        double value = [amount isKindOfClass:[NSNumber class]] ? [amount doubleValue] : 0;
-        if (value <= 0) {
-            [zeroed addObject:name];
+        if (!isSent) {
             continue;
         }
 
         HKUnit *unit = [name isEqualToString:@"EnergyConsumed"] ? [HKUnit kilocalorieUnit] : [HKUnit gramUnit];
         // The same sync identifier with a higher version replaces the sample instead of adding one.
+        // A zero is saved as a sample too, not deleted: a delete would ignore the version, so a stale
+        // or late call could remove a newer value.
         NSDictionary *metadata = @{
             HKMetadataKeySyncIdentifier: [NSString stringWithFormat:@"%@:%@", mealUUID, name],
             HKMetadataKeySyncVersion: @([version longLongValue]),
             RCTMealUUIDMetadataKey: mealUUID,
         };
         [samples addObject:[HKQuantitySample quantitySampleWithType:type
-                                                           quantity:[HKQuantity quantityWithUnit:unit doubleValue:value]
+                                                           quantity:[HKQuantity quantityWithUnit:unit doubleValue:[amount doubleValue]]
                                                           startDate:date
                                                             endDate:date
                                                            metadata:metadata]];
@@ -660,32 +696,24 @@ static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
     }
 
     NSDictionary *result = @{@"written": written, @"denied": denied};
-
-    // A value edited down to zero must not leave the previous one in Health.
-    [self dietary_deleteMealSamples:mealUUID ofTypes:zeroed completion:^(NSArray<NSString *> *deleted, NSError *deleteError) {
-        if (deleteError) {
-            callback(@[RCTMakeError(@"An error occurred while clearing the meal nutrition", deleteError, nil)]);
+    if (samples.count == 0) {
+        callback(@[[NSNull null], result]);
+        return;
+    }
+    [self.healthStore saveObjects:samples withCompletion:^(BOOL success, NSError *error) {
+        if (!success) {
+            callback(@[RCTMakeError(@"An error occurred while saving the meal nutrition", error, nil)]);
             return;
         }
-        if (samples.count == 0) {
-            callback(@[[NSNull null], result]);
-            return;
-        }
-        [self.healthStore saveObjects:samples withCompletion:^(BOOL success, NSError *error) {
-            if (!success) {
-                callback(@[RCTMakeError(@"An error occurred while saving the meal nutrition", error, nil)]);
-                return;
-            }
-            callback(@[[NSNull null], result]);
-        }];
+        callback(@[[NSNull null], result]);
     }];
 }
 
 - (void)dietary_deleteMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     NSString *mealUUID = [RCTAppleHealthKit stringFromOptions:input key:@"mealUUID" withDefault:nil];
-    if (mealUUID == nil) {
-        callback(@[RCTMakeError(@"mealUUID is required", nil, nil)]);
+    if (!RCTIsMealUUID(mealUUID)) {
+        callback(@[RCTMakeError(@"mealUUID must be a non-empty string", nil, nil)]);
         return;
     }
 
@@ -712,8 +740,8 @@ static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
 - (void)dietary_hasMealNutrition:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
 {
     NSString *mealUUID = [RCTAppleHealthKit stringFromOptions:input key:@"mealUUID" withDefault:nil];
-    if (mealUUID == nil) {
-        callback(@[RCTMakeError(@"mealUUID is required", nil, nil)]);
+    if (!RCTIsMealUUID(mealUUID)) {
+        callback(@[RCTMakeError(@"mealUUID must be a non-empty string", nil, nil)]);
         return;
     }
 
@@ -723,7 +751,8 @@ static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
     __block NSError *firstError = nil;
     dispatch_group_t group = dispatch_group_create();
 
-    // HealthKit always returns the app its own samples, even without read permission.
+    // Once a type was asked for, HealthKit returns the app its own samples even without read permission.
+    // A type never asked for fails with "authorization not determined"; the app cannot have saved it.
     for (NSString *name in RCTMealNutritionTypeNames()) {
         dispatch_group_enter(group);
         HKSampleQuery *query = [[HKSampleQuery alloc] initWithSampleType:(HKSampleType *)[self getWritePermFromText:name]
@@ -731,10 +760,11 @@ static NSArray<NSString *> *RCTMealNutritionTypeNames(void)
                                                                    limit:1
                                                          sortDescriptors:nil
                                                           resultsHandler:^(HKSampleQuery *query, NSArray<__kindof HKSample *> *results, NSError *error) {
+            BOOL isNotDetermined = [error.domain isEqualToString:HKErrorDomain] && error.code == HKErrorAuthorizationNotDetermined;
             @synchronized (lock) {
                 if (results.count > 0) {
                     found = YES;
-                } else if (error != nil && firstError == nil) {
+                } else if (error != nil && !isNotDetermined && firstError == nil) {
                     firstError = error;
                 }
             }

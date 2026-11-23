@@ -835,6 +835,8 @@ declare module 'react-native-health' {
       callback: (error: string, result: MealNutritionSaveResult) => void,
     ): void
 
+    // HealthKit has no versioned delete: wait for the meal's earlier calls, and never save an older
+    // version of the meal after deleting it, or the meal comes back.
     deleteMealNutrition(
       options: { mealUUID: string },
       callback: (error: string, result: MealNutritionDeleteResult) => void,
@@ -859,10 +861,13 @@ declare module 'react-native-health' {
 
   export interface MealNutritionOptions {
     mealUUID: string
-    // Must grow with every write of the meal: Health keeps the sample with the highest version.
+    // A whole number of 0 or more that grows with every write of the meal: Health keeps the sample
+    // with the highest version.
     version: number
     date: string
-    // EnergyConsumed in kcal, the rest in grams. A zero value deletes that sample; a type left out keeps it.
+    // EnergyConsumed in kcal, the rest in grams, each a finite number of 0 or more. A zero is saved
+    // as 0 and, like any value, replaces the previous one only with a higher version; a type left
+    // out keeps it.
     values: Partial<Record<MealNutritionType, number>>
   }
 
