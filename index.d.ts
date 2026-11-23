@@ -398,6 +398,11 @@ declare module 'react-native-health' {
       callback: (err: string, results: HealthStatusResult) => void,
     ): void
 
+    getRequestStatusForAuthorization(
+      permissions: HealthKitPermissions,
+      callback: (err: string, status: HealthAuthorizationRequestStatus) => void,
+    ): void
+
     getEarliestAuthorizedSampleDates(
       permissions: HealthKitPermissions,
       callback: (
@@ -770,6 +775,14 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
+    getStatisticDietaryDailyAverages(
+      options: HealthStatisticsDietaryDailyAveragesInputOptions,
+      callback: (
+        err: string,
+        results: Record<string, Array<HealthValue>>,
+      ) => void,
+    ): void
+
     // Activity
 
     getStatisticDistanceWheelchair(
@@ -998,6 +1011,16 @@ declare module 'react-native-health' {
     startDate: string
     endDate: string
     source?: string
+  }
+
+  export interface HealthStatisticsDietaryDailyAveragesInputOptions {
+    /** Quantity type identifiers without the `HKQuantityTypeIdentifier` prefix, e.g. `DietaryProtein`. */
+    types: Array<string>
+    interval?: HealthStatisticsIntervalType
+    startDate?: string
+    endDate?: string
+    /** Samples per page of the query; 5000 when left out. */
+    limit?: number
   }
 
   export type StatisticKey =
@@ -1550,6 +1573,13 @@ declare module 'react-native-health' {
       read: HealthStatusCode[]
       write: HealthStatusCode[]
     }
+  }
+
+  /** `HKAuthorizationRequestStatus`: would `initHealthKit` show the access sheet. */
+  export enum HealthAuthorizationRequestStatus {
+    Unknown = 0,
+    ShouldRequest = 1,
+    Unnecessary = 2,
   }
 
   export interface HealthEarliestAuthorizedSampleDates {

@@ -89,6 +89,8 @@ export const HealthKit = {
   getWorkoutRouteSamples: AppleHealthKit.getWorkoutRouteSamples,
   saveWorkout: AppleHealthKit.saveWorkout,
   getAuthStatus: AppleHealthKit.getAuthStatus,
+  getRequestStatusForAuthorization:
+    AppleHealthKit.getRequestStatusForAuthorization,
   getEarliestAuthorizedSampleDates:
     AppleHealthKit.getEarliestAuthorizedSampleDates,
   getLatestBloodAlcoholContent: AppleHealthKit.getLatestBloodAlcoholContent,
@@ -144,6 +146,8 @@ export const HealthKit = {
   getStatisticDietaryVitaminC: AppleHealthKit.getStatisticDietaryVitaminC,
   getStatisticDietaryVitaminD: AppleHealthKit.getStatisticDietaryVitaminD,
   getStatisticInsulinDelivery: AppleHealthKit.getStatisticInsulinDelivery,
+  getStatisticDietaryDailyAverages:
+    AppleHealthKit.getStatisticDietaryDailyAverages,
 
   Constants: {
     Activities,

@@ -937,8 +937,11 @@
     // Set the results handler
     query.initialResultsHandler = ^(HKStatisticsCollectionQuery *query, HKStatisticsCollection *results, NSError *error) {
         if (error) {
-            // Perform proper error handling here
+            // Hand the error on: an empty list would read as "no data" while HealthKit
+            // refused the read (a locked device, a type the app never asked for).
             NSLog(@"*** An error occurred while calculating the statistics: %@ ***", error.localizedDescription);
+            completionHandler(nil, error);
+            return;
         }
 
         NSMutableArray *data = [NSMutableArray arrayWithCapacity:1];
