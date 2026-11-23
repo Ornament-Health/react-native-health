@@ -398,6 +398,19 @@ declare module 'react-native-health' {
       callback: (err: string, results: HealthStatusResult) => void,
     ): void
 
+    getRequestStatusForAuthorization(
+      permissions: HealthKitPermissions,
+      callback: (err: string, status: HealthAuthorizationRequestStatus) => void,
+    ): void
+
+    getEarliestAuthorizedSampleDates(
+      permissions: HealthKitPermissions,
+      callback: (
+        err: string,
+        results: HealthEarliestAuthorizedSampleDates,
+      ) => void,
+    ): void
+
     getLatestBloodAlcoholContent(
       options: HealthInputOptions,
       callback: (err: string, results: HealthValue) => void,
@@ -762,6 +775,14 @@ declare module 'react-native-health' {
       callback: (err: string, results: Array<HealthValue>) => void,
     ): void
 
+    getStatisticDietaryDailyAverages(
+      options: HealthStatisticsDietaryDailyAveragesInputOptions,
+      callback: (
+        err: string,
+        results: Record<string, Array<HealthValue>>,
+      ) => void,
+    ): void
+
     // Activity
 
     getStatisticDistanceWheelchair(
@@ -1036,6 +1057,16 @@ declare module 'react-native-health' {
     startDate: string
     endDate: string
     source?: string
+  }
+
+  export interface HealthStatisticsDietaryDailyAveragesInputOptions {
+    /** Quantity type identifiers without the `HKQuantityTypeIdentifier` prefix, e.g. `DietaryProtein`. */
+    types: Array<string>
+    interval?: HealthStatisticsIntervalType
+    startDate?: string
+    endDate?: string
+    /** Samples per page of the query; 5000 when left out. */
+    limit?: number
   }
 
   export type StatisticKey =
@@ -1588,6 +1619,25 @@ declare module 'react-native-health' {
       read: HealthStatusCode[]
       write: HealthStatusCode[]
     }
+  }
+
+  /** `HKAuthorizationRequestStatus`: would `initHealthKit` show the access sheet. */
+  export enum HealthAuthorizationRequestStatus {
+    Unknown = 0,
+    ShouldRequest = 1,
+    Unnecessary = 2,
+  }
+
+  export interface HealthEarliestAuthorizedSampleDates {
+    /** `false` before iOS 27, where every app reads the whole history. */
+    supported: boolean
+    /**
+     * ISO 8601 date of the earliest sample the app may read, by read
+     * permission. Only permissions with limited history are listed: a type
+     * shared with its whole history and a type that was not shared are both
+     * left out.
+     */
+    dates: Partial<Record<HealthPermission, string>>
   }
 
   export interface AnchoredQueryResults {

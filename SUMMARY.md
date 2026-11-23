@@ -12,6 +12,7 @@
 * [isAvailable](/docs/isAvailable.md)
 * [initHealthKit](/docs/initHealthKit.md)
 * [getAuthStatus](/docs/getAuthStatus.md)
+* [getEarliestAuthorizedSampleDates](/docs/getEarliestAuthorizedSampleDates.md)
 
 ## Background Methods
 

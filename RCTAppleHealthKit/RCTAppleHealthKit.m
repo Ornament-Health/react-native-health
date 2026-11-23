@@ -30,6 +30,13 @@
 #import <React/RCTBridgeModule.h>
 #import <React/RCTEventDispatcher.h>
 
+#if __IPHONE_OS_VERSION_MAX_ALLOWED < 270000
+// Implemented by HealthKit since iOS 27; SDKs before 27 do not declare it.
+@interface HKHealthStore (EarliestAuthorizedSampleDate)
+- (void)getEarliestAuthorizedSampleDateForTypes:(NSSet<HKObjectType *> *)types
+                                     completion:(void (^)(NSDictionary<HKObjectType *, NSDate *> *earliestDates, NSError *error))completion;
+@end
+#endif
 
 @implementation RCTAppleHealthKit
 
@@ -601,6 +608,18 @@ RCT_EXPORT_METHOD(getAuthStatus: (NSDictionary *)input callback:(RCTResponseSend
     [self getAuthorizationStatus:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getRequestStatusForAuthorization: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self getAuthorizationRequestStatus:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getEarliestAuthorizedSampleDates: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self fetchEarliestAuthorizedSampleDates:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getLatestBloodAlcoholContent: (NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
@@ -961,6 +980,12 @@ RCT_EXPORT_METHOD(getStatisticInsulinDelivery:(NSDictionary *)input callback:(RC
     [self statistics_getStatisticInsulinDelivery:input callback:callback];
 }
 
+RCT_EXPORT_METHOD(getStatisticDietaryDailyAverages:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self statistics_getStatisticDietaryDailyAverages:input callback:callback];
+}
+
 RCT_EXPORT_METHOD(getStatisticDistanceWheelchair:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
 {
     [self _initializeHealthStore];
@@ -1183,6 +1208,94 @@ RCT_EXPORT_METHOD(getMedianStatistic:(NSDictionary *)input callback:(RCTResponse
     } else {
         callback(@[RCTMakeError(@"HealthKit data is not available", nil, nil)]);
     }
+}
+
+/*!
+    Whether initHealthKit with the same permissions would show the access sheet: some type in them has never been
+    asked for. getAuthStatus cannot tell this for read access, which HealthKit hides; a type the app only reads keeps
+    "not determined" until it is asked for, and every query for it fails with HKErrorAuthorizationNotDetermined.
+
+    Calls back with HKAuthorizationRequestStatus: 0 unknown, 1 should request, 2 unnecessary.
+ */
+- (void)getAuthorizationRequestStatus:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    if (![HKHealthStore isHealthDataAvailable]) {
+        callback(@[RCTMakeError(@"HealthKit data is not available", nil, nil)]);
+        return;
+    }
+
+    NSDictionary* permissions = [input objectForKey:@"permissions"];
+    if (permissions == nil) {
+        callback(@[RCTMakeError(@"permissions must be provided in the options", nil, nil)]);
+        return;
+    }
+
+    NSSet* readTypes = [self getReadPermsFromOptions:[permissions objectForKey:@"read"]];
+    NSSet* writeTypes = [self getWritePermsFromOptions:[permissions objectForKey:@"write"]];
+
+    // HealthKit raises an exception, which crashes the app, when both sets are empty.
+    if ([readTypes count] == 0 && [writeTypes count] == 0) {
+        callback(@[RCTMakeError(@"at least 1 read or write permission must be set in options.permissions", nil, nil)]);
+        return;
+    }
+
+    [self.healthStore getRequestStatusForAuthorizationToShareTypes:writeTypes
+                                                          readTypes:readTypes
+                                                         completion:^(HKAuthorizationRequestStatus requestStatus, NSError *error) {
+        if (error) {
+            callback(@[RCTJSErrorFromNSError(error)]);
+            return;
+        }
+
+        callback(@[[NSNull null], @(requestStatus)]);
+    }];
+}
+
+/*!
+    Since iOS 27 the user may share only the last 30 days of history: HealthKit then keeps, per type, the date of the
+    earliest sample the app can read. Returns those dates keyed by read permission name. A type shared with its whole
+    history and a type that was not shared are both left out. Before iOS 27 every app reads the whole history, so
+    `supported` is false.
+ */
+- (void)fetchEarliestAuthorizedSampleDates:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback
+{
+    NSArray *readPermsNamesArray = [[input objectForKey:@"permissions"] objectForKey:@"read"];
+    if (readPermsNamesArray == nil) {
+        callback(@[RCTMakeError(@"permissions must be included in permissions object with read options", nil, nil)]);
+        return;
+    }
+
+    if (@available(iOS 27.0, *)) {
+        if ([self.healthStore respondsToSelector:@selector(getEarliestAuthorizedSampleDateForTypes:completion:)]) {
+            // The boundary is a sample date, so types without samples (activity summary, characteristics) are skipped.
+            NSMutableSet *sampleTypes = [NSMutableSet set];
+            for (HKObjectType *type in [self getReadPermsFromOptions:readPermsNamesArray]) {
+                if ([type isKindOfClass:[HKSampleType class]]) {
+                    [sampleTypes addObject:type];
+                }
+            }
+
+            [self.healthStore getEarliestAuthorizedSampleDateForTypes:sampleTypes completion:^(NSDictionary<HKObjectType *, NSDate *> *earliestDates, NSError *error) {
+                if (error) {
+                    callback(@[RCTMakeError(@"error getting earliest authorized sample dates:", error, nil)]);
+                    return;
+                }
+
+                NSMutableDictionary *dates = [NSMutableDictionary dictionary];
+                for (NSString *name in readPermsNamesArray) {
+                    HKObjectType *type = [self getReadPermFromText:name];
+                    NSDate *date = type != nil ? earliestDates[type] : nil;
+                    if (date != nil) {
+                        dates[name] = [RCTAppleHealthKit buildISO8601StringFromDate:date];
+                    }
+                }
+                callback(@[[NSNull null], @{ @"supported": @YES, @"dates": dates }]);
+            }];
+            return;
+        }
+    }
+
+    callback(@[[NSNull null], @{ @"supported": @NO, @"dates": @{} }]);
 }
 
 /*!
