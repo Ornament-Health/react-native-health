@@ -657,6 +657,7 @@ static BOOL RCTIsMealAmount(id value)
 
     NSMutableArray<HKQuantitySample *> *samples = [NSMutableArray array];
     NSMutableArray<NSString *> *written = [NSMutableArray array];
+    NSMutableArray<NSString *> *zeroed = [NSMutableArray array];
     NSMutableArray<NSString *> *denied = [NSMutableArray array];
 
     for (NSString *name in RCTMealNutritionTypeNames()) {
@@ -677,11 +678,16 @@ static BOOL RCTIsMealAmount(id value)
         if (!isSent) {
             continue;
         }
+        // A zero removes the type's earlier sample instead of saving a 0, which Health would count
+        // as an entry and a day with data. Only a sample of an equal or lower version goes, so a
+        // stale or late call cannot remove a newer value.
+        if ([amount doubleValue] == 0) {
+            [zeroed addObject:name];
+            continue;
+        }
 
         HKUnit *unit = [name isEqualToString:@"EnergyConsumed"] ? [HKUnit kilocalorieUnit] : [HKUnit gramUnit];
         // The same sync identifier with a higher version replaces the sample instead of adding one.
-        // A zero is saved as a sample too, not deleted: a delete would ignore the version, so a stale
-        // or late call could remove a newer value.
         NSDictionary *metadata = @{
             HKMetadataKeySyncIdentifier: [NSString stringWithFormat:@"%@:%@", mealUUID, name],
             HKMetadataKeySyncVersion: @([version longLongValue]),
@@ -696,8 +702,19 @@ static BOOL RCTIsMealAmount(id value)
     }
 
     NSDictionary *result = @{@"written": written, @"denied": denied};
+    NSNumber *syncVersion = @([version longLongValue]);
+    void (^clearZeroed)(void) = ^{
+        [self dietary_deleteMealSamples:mealUUID ofTypes:zeroed upToVersion:syncVersion completion:^(NSArray<NSString *> *deleted, NSError *error) {
+            if (error) {
+                callback(@[RCTMakeError(@"An error occurred while clearing the meal nutrition", error, nil)]);
+                return;
+            }
+            callback(@[[NSNull null], result]);
+        }];
+    };
+
     if (samples.count == 0) {
-        callback(@[[NSNull null], result]);
+        clearZeroed();
         return;
     }
     [self.healthStore saveObjects:samples withCompletion:^(BOOL success, NSError *error) {
@@ -705,7 +722,7 @@ static BOOL RCTIsMealAmount(id value)
             callback(@[RCTMakeError(@"An error occurred while saving the meal nutrition", error, nil)]);
             return;
         }
-        callback(@[[NSNull null], result]);
+        clearZeroed();
     }];
 }
 
@@ -728,7 +745,7 @@ static BOOL RCTIsMealAmount(id value)
         }
     }
 
-    [self dietary_deleteMealSamples:mealUUID ofTypes:authorized completion:^(NSArray<NSString *> *deleted, NSError *error) {
+    [self dietary_deleteMealSamples:mealUUID ofTypes:authorized upToVersion:nil completion:^(NSArray<NSString *> *deleted, NSError *error) {
         if (error) {
             callback(@[RCTMakeError(@"An error occurred while deleting the meal nutrition", error, nil)]);
             return;
@@ -783,16 +800,30 @@ static BOOL RCTIsMealAmount(id value)
 }
 
 // Deletes the meal's samples of the given types; `deleted` names the types that had any.
+// With a version, only the sample under the type's sync identifier whose sync version is equal or
+// lower goes, the same rule a save follows to replace it; without one, every sample of the meal goes.
 - (void)dietary_deleteMealSamples:(NSString *)mealUUID
                           ofTypes:(NSArray<NSString *> *)typeNames
+                      upToVersion:(NSNumber *)version
                        completion:(void (^)(NSArray<NSString *> *deleted, NSError *error))completion
 {
-    NSPredicate *predicate = [HKQuery predicateForObjectsWithMetadataKey:RCTMealUUIDMetadataKey allowedValues:@[mealUUID]];
+    NSPredicate *mealPredicate = [HKQuery predicateForObjectsWithMetadataKey:RCTMealUUIDMetadataKey allowedValues:@[mealUUID]];
     NSMutableArray<NSString *> *deleted = [NSMutableArray array];
     __block NSError *firstError = nil;
     dispatch_group_t group = dispatch_group_create();
 
     for (NSString *name in typeNames) {
+        NSPredicate *predicate = mealPredicate;
+        if (version != nil) {
+            NSString *syncIdentifier = [NSString stringWithFormat:@"%@:%@", mealUUID, name];
+            predicate = [NSCompoundPredicate andPredicateWithSubpredicates:@[
+                [HKQuery predicateForObjectsWithMetadataKey:HKMetadataKeySyncIdentifier allowedValues:@[syncIdentifier]],
+                [HKQuery predicateForObjectsWithMetadataKey:HKMetadataKeySyncVersion
+                                               operatorType:NSLessThanOrEqualToPredicateOperatorType
+                                                      value:version],
+            ]];
+        }
+
         dispatch_group_enter(group);
         [self.healthStore deleteObjectsOfType:[self getWritePermFromText:name]
                                     predicate:predicate

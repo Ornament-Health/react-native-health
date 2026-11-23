@@ -13,7 +13,7 @@ Save a meal's energy and macros to HealthKit as up to five samples, one per type
 Every sample carries the meal's id under the `OrnamentMealUUID` metadata key, `HKMetadataKeySyncIdentifier` `<mealUUID>:<Type>` and `HKMetadataKeySyncVersion` `version`. A later save of the same meal therefore replaces its samples instead of adding new ones, as long as its `version` is equal or higher. A save with a lower version is dropped by HealthKit without an error, and `written` still lists its types.
 
 - A type left out of `values`, or sent as `null`, keeps whatever the meal already has in HealthKit.
-- A zero is saved as a 0 sample, so it replaces the previous value under the same version rule. It is not a delete: a HealthKit delete ignores the version, so a late call could remove a newer value.
+- A zero deletes the type's sample instead of saving a 0, which the Health app would count as an entry and a day with data. Only a sample with an equal or lower version goes, the same rule a save follows, so a late call cannot remove a newer value. The type is not listed in `written`. The delete needs HealthKit's database, which a locked device does not open, so a call with a zero fails there.
 - A type without write permission is skipped and listed in `denied`.
 - Invalid input fails the whole call before anything is written: an empty `mealUUID`, a `version` that is not a whole number from 0 to 2^53 - 1, a missing `date`, or a value that is negative or not a finite number.
 
@@ -31,7 +31,7 @@ let options = {
     Protein: 32, // g
     FatTotal: 18,
     Carbohydrates: 54,
-    Fiber: 0, // saved as a 0 sample
+    Fiber: 0, // deletes the meal's fiber sample of an equal or lower version
   },
 }
 ```
@@ -52,7 +52,7 @@ Example output:
 
 ```json
 {
-  "written": ["EnergyConsumed", "Protein", "FatTotal", "Carbohydrates", "Fiber"],
+  "written": ["EnergyConsumed", "Protein", "FatTotal", "Carbohydrates"],
   "denied": []
 }
 ```

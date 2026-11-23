@@ -886,9 +886,9 @@ declare module 'react-native-health' {
     // with the highest version.
     version: number
     date: string
-    // EnergyConsumed in kcal, the rest in grams, each a finite number of 0 or more. A zero is saved
-    // as 0 and, like any value, replaces the previous one only with a higher version; a type left
-    // out keeps it.
+    // EnergyConsumed in kcal, the rest in grams, each a finite number of 0 or more. A zero deletes
+    // the type's sample of an equal or lower version and is not listed in `written`; a type left out
+    // keeps it.
     values: Partial<Record<MealNutritionType, number>>
   }
 
