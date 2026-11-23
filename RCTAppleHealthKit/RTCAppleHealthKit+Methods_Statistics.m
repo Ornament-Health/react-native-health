@@ -846,9 +846,14 @@
 
         HKQuantity *quantity = sample.quantity;
         double value = [quantity doubleValueForUnit:unit];
+        // A zero adds nothing to the sum but would count its day as one with data and pull the
+        // average down. saveMealNutrition writes zeros when a meal is edited down to nothing.
+        if (value == 0) {
+            continue;
+        }
 
         NSMutableDictionary *response = [NSMutableDictionary dictionary];
-        response[@"value"] = value ? @(value) : @"0";
+        response[@"value"] = @(value);
         response[@"interval"] = interval ? interval : @"";
         response[@"startDate"] = sample.startDate;
         response[@"endDate"] = sample.endDate;
