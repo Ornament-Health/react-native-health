@@ -55,6 +55,9 @@
 ## Dietary Methods
 
 * [saveFood](/docs/saveFood.md)
+* [saveMealNutrition](/docs/saveMealNutrition.md)
+* [deleteMealNutrition](/docs/deleteMealNutrition.md)
+* [hasMealNutrition](/docs/hasMealNutrition.md)
 * [saveWater](/docs/saveWater.md)
 * [getWater](/docs/getWater.md)
 * [getWaterSamples](/docs/getWaterSamples.md)

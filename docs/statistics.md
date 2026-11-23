@@ -108,6 +108,8 @@ AppleHealthKit.getStatisticBodyMass(
 ```
 For dietary biomarkers (Macronutrients, Vitamins, Minerals, Hydration, Caffeination, Ultratrace Minerals types) could be calculated interval average, daily average or cumulative values.
 
+With `AVERAGE` and `DAILY_AVERAGE`, dietary samples with a value of 0 are left out: a zero adds nothing to a sum, but it would count as an entry, or its day as one with data, and pull the average down. An interval with only zeros is not returned. [saveMealNutrition](saveMealNutrition.md) writes such zeros when a meal is edited down to nothing.
+
 ## Request payload
 
 |name|type|required|
