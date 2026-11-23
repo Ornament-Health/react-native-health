@@ -150,6 +150,7 @@ All the documentation is under the [docs](/docs) folder. They are split into the
 - [initHealthKit](/docs/initHealthKit.md)
 - [getAuthStatus](/docs/getAuthStatus.md)
 - [getRequestStatusForAuthorization](/docs/getRequestStatusForAuthorization.md)
+- [getEarliestAuthorizedSampleDates](/docs/getEarliestAuthorizedSampleDates.md)
 
 ### Background Methods
 

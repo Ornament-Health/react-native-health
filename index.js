@@ -91,6 +91,8 @@ export const HealthKit = {
   getAuthStatus: AppleHealthKit.getAuthStatus,
   getRequestStatusForAuthorization:
     AppleHealthKit.getRequestStatusForAuthorization,
+  getEarliestAuthorizedSampleDates:
+    AppleHealthKit.getEarliestAuthorizedSampleDates,
   getLatestBloodAlcoholContent: AppleHealthKit.getLatestBloodAlcoholContent,
   getBloodAlcoholContentSamples: AppleHealthKit.getBloodAlcoholContentSamples,
   saveBloodAlcoholContent: AppleHealthKit.saveBloodAlcoholContent,

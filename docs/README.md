@@ -15,6 +15,7 @@ There is a gitbook version for the documentation on this [link](https://vinicius
 - [initHealthKit](initHealthKit.md)
 - [getAuthStatus](getAuthStatus.md)
 - [getRequestStatusForAuthorization](getRequestStatusForAuthorization.md)
+- [getEarliestAuthorizedSampleDates](getEarliestAuthorizedSampleDates.md)
 
 ### Background Methods
 
