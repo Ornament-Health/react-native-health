@@ -846,14 +846,16 @@
 
         HKQuantity *quantity = sample.quantity;
         double value = [quantity doubleValueForUnit:unit];
-        // A zero adds nothing to the sum but would count its day as one with data and pull the
-        // average down. saveMealNutrition writes zeros when a meal is edited down to nothing.
-        if (value == 0) {
+        // saveMealNutrition writes a zero when a meal is edited down to nothing. It adds nothing to
+        // the sum but would count its day as one with data and pull the average down, so it is left
+        // out. Zeros from other sources are real entries and stay. The key is RCTMealUUIDMetadataKey
+        // in RCTAppleHealthKit+Methods_Dietary.m.
+        if (value == 0 && sample.metadata[@"OrnamentMealUUID"] != nil) {
             continue;
         }
 
         NSMutableDictionary *response = [NSMutableDictionary dictionary];
-        response[@"value"] = @(value);
+        response[@"value"] = value ? @(value) : @"0";
         response[@"interval"] = interval ? interval : @"";
         response[@"startDate"] = sample.startDate;
         response[@"endDate"] = sample.endDate;
