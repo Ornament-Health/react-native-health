@@ -62,6 +62,9 @@ There is a gitbook version for the documentation on this [link](https://vinicius
 ### Dietary Methods
 
 - [saveFood](saveFood.md)
+- [saveMealNutrition](saveMealNutrition.md)
+- [deleteMealNutrition](deleteMealNutrition.md)
+- [hasMealNutrition](hasMealNutrition.md)
 - [saveWater](saveWater.md)
 - [getWater](getWater.md)
 - [getWaterSamples](getWaterSamples.md)

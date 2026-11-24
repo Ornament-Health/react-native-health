@@ -851,10 +851,56 @@ declare module 'react-native-health' {
       callback: (error: string, result: number) => void,
     ): void
 
+    saveMealNutrition(
+      options: MealNutritionOptions,
+      callback: (error: string, result: MealNutritionSaveResult) => void,
+    ): void
+
+    // HealthKit has no versioned delete: wait for the meal's earlier calls, and never save an older
+    // version of the meal after deleting it, or the meal comes back.
+    deleteMealNutrition(
+      options: { mealUUID: string },
+      callback: (error: string, result: MealNutritionDeleteResult) => void,
+    ): void
+
+    hasMealNutrition(
+      options: { mealUUID: string },
+      callback: (error: string, result: boolean) => void,
+    ): void
+
     Constants: Constants
   }
 
   /* Inputs and Payloads */
+
+  export type MealNutritionType =
+    | HealthPermission.EnergyConsumed
+    | HealthPermission.Protein
+    | HealthPermission.FatTotal
+    | HealthPermission.Carbohydrates
+    | HealthPermission.Fiber
+
+  export interface MealNutritionOptions {
+    mealUUID: string
+    // A whole number of 0 or more that grows with every write of the meal: Health keeps the sample
+    // with the highest version.
+    version: number
+    date: string
+    // EnergyConsumed in kcal, the rest in grams, each a finite number of 0 or more. A zero deletes
+    // the type's sample of an equal or lower version and is not listed in `written`; a type left out
+    // keeps it.
+    values: Partial<Record<MealNutritionType, number>>
+  }
+
+  export interface MealNutritionSaveResult {
+    written: MealNutritionType[]
+    denied: MealNutritionType[]
+  }
+
+  export interface MealNutritionDeleteResult {
+    deleted: MealNutritionType[]
+    denied: MealNutritionType[]
+  }
 
   export interface HealthDateOfBirth {
     value: string
