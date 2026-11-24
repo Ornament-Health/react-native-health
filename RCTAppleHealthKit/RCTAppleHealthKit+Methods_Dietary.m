@@ -16,7 +16,7 @@
 
 // Every sample of a meal carries the app's meal id under this key, so the meal's
 // samples are found, replaced and deleted together.
-static NSString *const RCTMealUUIDMetadataKey = @"OrnamentMealUUID";
+static NSString *const RCTMealUUIDMetadataKey = @"MealUUID";
 
 // The values a meal is written as, named as in Permissions.
 static NSArray<NSString *> *RCTMealNutritionTypeNames(void)

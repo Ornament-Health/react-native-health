@@ -10,7 +10,7 @@ Save a meal's energy and macros to HealthKit as up to five samples, one per type
 | `Carbohydrates` | g |
 | `Fiber` | g |
 
-Every sample carries the meal's id under the `OrnamentMealUUID` metadata key, `HKMetadataKeySyncIdentifier` `<mealUUID>:<Type>` and `HKMetadataKeySyncVersion` `version`. A later save of the same meal therefore replaces its samples instead of adding new ones, as long as its `version` is equal or higher. A save with a lower version is dropped by HealthKit without an error, and `written` still lists its types.
+Every sample carries the meal's id under the `MealUUID` metadata key, `HKMetadataKeySyncIdentifier` `<mealUUID>:<Type>` and `HKMetadataKeySyncVersion` `version`. A later save of the same meal therefore replaces its samples instead of adding new ones, as long as its `version` is equal or higher. A save with a lower version is dropped by HealthKit without an error, and `written` still lists its types.
 
 - A type left out of `values`, or sent as `null`, keeps whatever the meal already has in HealthKit.
 - A zero deletes the type's sample instead of saving a 0, which the Health app would count as an entry and a day with data. Only a sample with an equal or lower version goes, the same rule a save follows, so a late call cannot remove a newer value. The type is not listed in `written`. The delete needs HealthKit's database, which a locked device does not open, so a call with a zero fails there.

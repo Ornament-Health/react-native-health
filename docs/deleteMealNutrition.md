@@ -1,6 +1,6 @@
 # deleteMealNutrition
 
-Delete the samples that [saveMealNutrition](saveMealNutrition.md) wrote for a meal. The samples are found by the meal's id in the `OrnamentMealUUID` metadata key, for each of the five types the app may write.
+Delete the samples that [saveMealNutrition](saveMealNutrition.md) wrote for a meal. The samples are found by the meal's id in the `MealUUID` metadata key, for each of the five types the app may write.
 
 - `deleted` lists the types that had samples. A meal with no samples is not an error: both lists can be empty.
 - A type without write permission is skipped and listed in `denied`; its sample, if any, stays in HealthKit.
