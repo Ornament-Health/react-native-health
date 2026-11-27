@@ -223,14 +223,32 @@ static BOOL RCTIsSymptomVersion(id value)
     return isfinite(version) && version >= 0 && version == floor(version) && version <= 9007199254740991.0;
 }
 
-// HKCategoryValue codes are small whole numbers; NaN or a fraction would be truncated silently.
-static BOOL RCTIsSymptomValue(id value)
+// The largest raw value a symptom type takes. HealthKit throws, and the app crashes,
+// when a sample is created with a value outside its type's enum.
+static NSInteger RCTSymptomMaxValue(HKCategoryType *type)
+{
+    NSString *identifier = type.identifier;
+    // HKCategoryValuePresence: 0 present, 1 not present.
+    if ([identifier isEqualToString:HKCategoryTypeIdentifierMoodChanges]
+        || [identifier isEqualToString:HKCategoryTypeIdentifierSleepChanges]) {
+        return 1;
+    }
+    // HKCategoryValueAppetiteChanges: 0 unspecified, 1 no change, 2 decreased, 3 increased.
+    if ([identifier isEqualToString:HKCategoryTypeIdentifierAppetiteChanges]) {
+        return 3;
+    }
+    // HKCategoryValueSeverity: 0 unspecified, 1 not present, 2 mild, 3 moderate, 4 severe.
+    return 4;
+}
+
+// A whole number within the type's enum; NaN or a fraction would be truncated silently.
+static BOOL RCTIsSymptomValue(id value, HKCategoryType *type)
 {
     if (![value isKindOfClass:[NSNumber class]]) {
         return NO;
     }
     double number = [value doubleValue];
-    return isfinite(number) && number >= 0 && number == floor(number) && number <= NSIntegerMax;
+    return isfinite(number) && number >= 0 && number == floor(number) && number <= RCTSymptomMaxValue(type);
 }
 
 // Input: { type, syncIdentifier, version, value, startDate, endDate, metadata? }.
@@ -260,8 +278,9 @@ static BOOL RCTIsSymptomValue(id value)
         callback(@[RCTMakeError(@"version must be a whole number from 0 to 2^53 - 1", nil, nil)]);
         return;
     }
-    if (!RCTIsSymptomValue(value)) {
-        callback(@[RCTMakeError(@"value must be a whole number of 0 or more", nil, nil)]);
+    if (!RCTIsSymptomValue(value, type)) {
+        callback(@[RCTMakeError([NSString stringWithFormat:@"value must be a whole number from 0 to %ld for this type",
+                                 (long)RCTSymptomMaxValue(type)], nil, nil)]);
         return;
     }
     if (startDate == nil || endDate == nil || [endDate compare:startDate] == NSOrderedAscending) {
@@ -361,7 +380,9 @@ static BOOL RCTIsSymptomValue(id value)
             callback(@[RCTMakeError(@"An error occurred while looking up the symptom", error, nil)]);
             return;
         }
-        callback(@[[NSNull null], @([results count] > 0)]);
+        // A BOOL boxes to a JS boolean; the bare comparison would box to the number 0 or 1.
+        BOOL found = [results count] > 0;
+        callback(@[[NSNull null], @(found)]);
     }];
 
     [self.healthStore executeQuery:query];

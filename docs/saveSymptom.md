@@ -12,11 +12,11 @@ Save one symptom to HealthKit as an `HKCategorySample`.
 | `appetiteChanges` (`HKCategoryValueAppetiteChanges`) | 0 unspecified, 1 no change, 2 decreased, 3 increased |
 | `moodChanges`, `sleepChanges` (`HKCategoryValuePresence`) | 0 present, 1 not present |
 
-The sample carries `HKMetadataKeySyncIdentifier` `syncIdentifier` and `HKMetadataKeySyncVersion` `version`. A later save with the same `syncIdentifier` and an equal or higher `version` replaces the sample: HealthKit deletes the old one, so [getAnchoredSymptoms](getAnchoredSymptoms.md) reports its UUID in `deletedIds` and returns the new sample. A save with a lower version is dropped by HealthKit without an error.
+The sample carries `HKMetadataKeySyncIdentifier` `syncIdentifier` and `HKMetadataKeySyncVersion` `version`. A later save with the same `syncIdentifier` and an equal or higher `version` replaces the sample: HealthKit deletes the old one, so [getAnchoredSymptoms](getAnchoredSymptoms.md) reports its UUID in `deletedIds` and returns the new sample. A save with a lower version is dropped by HealthKit without an error: the result still says `saved`, with the id of a sample HealthKit did not keep.
 
 - `metadata` adds string and number values to the sample. Keys starting with `HK` are HealthKit's own and are left out; the sync keys are always the ones above.
 - Without write permission for the type nothing is saved and the result is `{ "status": "denied" }`.
-- Invalid input fails the call before anything is written: an unknown `type`, an empty `syncIdentifier`, a `version` that is not a whole number from 0 to 2^53 - 1, a `value` that is not a whole number of 0 or more, a missing date or an `endDate` before `startDate`.
+- Invalid input fails the call before anything is written: an unknown `type`, an empty `syncIdentifier`, a `version` that is not a whole number from 0 to 2^53 - 1, a `value` outside the type's values in the table above, a missing date or an `endDate` before `startDate`.
 
 Request the write permission first with `initHealthKit` (for example `Headache` in `permissions.write`).
 

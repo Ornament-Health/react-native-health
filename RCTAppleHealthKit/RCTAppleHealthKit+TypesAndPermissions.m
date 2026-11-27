@@ -7,6 +7,7 @@
 //
 
 #import "RCTAppleHealthKit+TypesAndPermissions.h"
+#import "RCTAppleHealthKit+Methods_Symptoms.h"
 #import "RCTAppleHealthKit+Utils.h"
 
 @implementation RCTAppleHealthKit (TypesAndPermissions)
@@ -659,6 +660,13 @@
     }
     if ([@"HeartRate" isEqualToString: key]) {
         return [HKObjectType quantityTypeForIdentifier:HKQuantityTypeIdentifierHeartRate];
+    }
+
+    // Symptoms: an app writes the same category types it reads.
+    HKObjectType *readType = [self getReadPermFromText:key];
+    if ([readType isKindOfClass:[HKCategoryType class]]
+        && [[[RCTAppleHealthKit symptomTypeIdentifiers] allValues] containsObject:readType.identifier]) {
+        return readType;
     }
 
     return nil;
