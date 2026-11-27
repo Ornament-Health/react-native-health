@@ -108,6 +108,13 @@ There is a gitbook version for the documentation on this [link](https://vinicius
 
 - [getSleepSamples](getSleepSamples.md)
 
+### Symptoms Methods
+
+- [getAnchoredSymptoms](getAnchoredSymptoms.md)
+- [saveSymptom](saveSymptom.md)
+- [deleteSymptom](deleteSymptom.md)
+- [hasSymptom](hasSymptom.md)
+
 #### Vitals Methods
 
 - [getBloodPressureSamples](getBloodPressureSamples.md)

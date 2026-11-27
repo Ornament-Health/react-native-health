@@ -105,6 +105,13 @@
 
 * [getSleepSamples](/docs/getSleepSamples.md)
 
+## Symptoms Methods
+
+* [getAnchoredSymptoms](/docs/getAnchoredSymptoms.md)
+* [saveSymptom](/docs/saveSymptom.md)
+* [deleteSymptom](/docs/deleteSymptom.md)
+* [hasSymptom](/docs/hasSymptom.md)
+
 ## Vitals Methods
 
 * [getBloodPressureSamples](/docs/getBloodPressureSamples.md)
