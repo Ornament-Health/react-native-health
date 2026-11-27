@@ -155,6 +155,26 @@ declare module 'react-native-health' {
       callback: (err: HKErrorResponse, results: AnchoredQueryResults) => void,
     ): void
 
+    getAnchoredSymptoms(
+      options: AnchoredSymptomsOptions,
+      callback: (err: string, results: AnchoredSymptomsResults) => void,
+    ): void
+
+    saveSymptom(
+      options: SymptomSaveOptions,
+      callback: (err: string, result: SymptomSaveResult) => void,
+    ): void
+
+    deleteSymptom(
+      options: SymptomLookupOptions,
+      callback: (err: string, result: SymptomDeleteResult) => void,
+    ): void
+
+    hasSymptom(
+      options: SymptomLookupOptions,
+      callback: (err: string, result: boolean) => void,
+    ): void
+
     getDailyStepCountSamples(
       options: HealthInputOptions,
       callback: (err: string, results: Array<HealthValue>) => void,
@@ -1639,6 +1659,67 @@ declare module 'react-native-health' {
      */
     dates: Partial<Record<HealthPermission, string>>
   }
+
+  export interface AnchoredSymptomsOptions {
+    /** HealthKit symptom identifiers without the prefix, e.g. 'headache'. */
+    types: Array<string>
+    /** Anchors from the previous call, by type; a type without one reads from startDate. */
+    anchors?: Record<string, string>
+    /** ISO date; samples starting before it are not returned. */
+    startDate: string
+  }
+
+  export interface SymptomSample {
+    /** HealthKit sample UUID. */
+    id: string
+    /** Raw HKCategorySample value (severity, presence or appetite change). */
+    value: number
+    startDate: string
+    endDate: string
+    sourceName: string
+    /** Bundle identifier of the app that saved the sample. */
+    sourceId: string
+    wasUserEntered: boolean
+    metadata: Record<string, string | number>
+  }
+
+  export type AnchoredSymptomsTypeResult =
+    | {
+        anchor: string | null
+        samples: Array<SymptomSample>
+        deletedIds: Array<string>
+      }
+    | { error: string }
+
+  export type AnchoredSymptomsResults = Record<string, AnchoredSymptomsTypeResult>
+
+  export interface SymptomLookupOptions {
+    /** HealthKit symptom identifier without the prefix, e.g. 'headache'. */
+    type: string
+    /** The app's id of the symptom, stored as HKMetadataKeySyncIdentifier. */
+    syncIdentifier: string
+  }
+
+  export interface SymptomSaveOptions extends SymptomLookupOptions {
+    /** HKMetadataKeySyncVersion: a save replaces a sample of a lower version. */
+    version: number
+    /** Raw HKCategorySample value (severity, presence or appetite change). */
+    value: number
+    /** ISO dates; endDate is not before startDate. */
+    startDate: string
+    endDate: string
+    /** Extra metadata; string and number values only. */
+    metadata?: Record<string, string | number>
+  }
+
+  export type SymptomSaveResult =
+    | { status: 'saved'; id: string }
+    | { status: 'denied' }
+
+  /** count 0: Health had no sample with that sync identifier. */
+  export type SymptomDeleteResult =
+    | { status: 'deleted'; count: number }
+    | { status: 'denied' }
 
   export interface AnchoredQueryResults {
     anchor: string

@@ -19,6 +19,7 @@
 #import "RCTAppleHealthKit+Methods_Results.h"
 #import "RCTAppleHealthKit+Methods_Sleep.h"
 #import "RCTAppleHealthKit+Methods_Mindfulness.h"
+#import "RCTAppleHealthKit+Methods_Symptoms.h"
 #import "RCTAppleHealthKit+Methods_Workout.h"
 #import "RCTAppleHealthKit+Methods_LabTests.h"
 #import "RCTAppleHealthKit+Methods_Hearing.h"
@@ -255,6 +256,30 @@ RCT_EXPORT_METHOD(getAnchoredWorkouts:(NSDictionary *)input callback:(RCTRespons
 {
     [self _initializeHealthStore];
     [self workout_getAnchoredQuery:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(getAnchoredSymptoms:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self symptoms_getAnchoredSymptoms:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(saveSymptom:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self symptoms_saveSymptom:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(deleteSymptom:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self symptoms_deleteSymptom:input callback:callback];
+}
+
+RCT_EXPORT_METHOD(hasSymptom:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
+{
+    [self _initializeHealthStore];
+    [self symptoms_hasSymptom:input callback:callback];
 }
 
 RCT_EXPORT_METHOD(getWorkoutRouteSamples:(NSDictionary *)input callback:(RCTResponseSenderBlock)callback)
